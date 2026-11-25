@@ -1,6 +1,6 @@
 import {motion} from 'motion/react';
 import {ArrowRight, MapPin, MessageCircle, Phone} from 'lucide-react';
-import {BUSINESS_INFO, IMAGES} from '../data/businessConfig';
+import {BUSINESS_INFO} from '../data/businessConfig';
 import {buildWhatsAppUrl} from '../utils/enquiry';
 import {ResilientImage} from './ResilientImage';
 
@@ -88,9 +88,9 @@ export function HeroSection() {
           >
             <div className="relative w-full min-h-[260px] sm:min-h-[340px] lg:min-h-[420px] rounded-xl overflow-hidden border border-navy-700 bg-navy-950">
               <ResilientImage
-                src={IMAGES.heroShowcase}
-                alt="Automotive car battery and tall tubular home inverter battery on a dark architectural concrete plinth"
-                fallbackLabel="Automobile & Home Inverter Batteries"
+                src="/assets/aistudio/WhatsApp_Image_2026-11-25_at_4.30.02_PM_cfa250ca.jpeg"
+                alt="Illuminated Amaron battery retail display wall showcasing automotive and inverter batteries"
+                fallbackLabel="Amaron Automobile & Home Inverter Batteries"
                 loading="eager"
                 className="w-full h-full object-cover"
               />

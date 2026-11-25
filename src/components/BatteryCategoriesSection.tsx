@@ -23,9 +23,11 @@ export function BatteryCategoriesSection({
         'Stocked Brands: Amaron car and two-wheeler batteries.',
         'Warranty & Pricing: [Editable — Confirm manufacturer warranty & current pricing at store].',
       ],
-      image: IMAGES.carTwoWheeler,
+      image:
+        '/assets/aistudio/WhatsApp_Image_2026-11-25_at_4.30.01_PM__2__efa6172b.jpeg',
       imageAlt:
-        'Unbranded heavy-duty automotive car starter battery beside a compact two-wheeler battery',
+        'Amaron Application Chart showcasing Amaron car, two-wheeler, commercial, and tractor batteries including Pro, Flo, Go, Pro Rider, Fresh, Black, Hiway, and Harvest ranges',
+      imageFit: 'contain' as const,
       enquiryCategory: 'Car Battery' as EnquiryCategory,
       whatsappMessage:
         'Hello Krishna Battery Service, I need a car or two-wheeler battery. Please share compatible options and pricing.',
@@ -63,9 +65,10 @@ export function BatteryCategoriesSection({
         'Available Inverter & Battery Combos: [Editable — Add stocked inverter brands & combo specs here].',
         'Installation Support: [Editable — Confirm installation & wiring support availability].',
       ],
-      image: IMAGES.backupSolutions,
+      image:
+        '/assets/aistudio/WhatsApp_Image_2026-11-25_at_4.30.03_PM_545247eb.jpeg',
       imageAlt:
-        'Cleanly installed wall-mounted home inverter wired to dual backup batteries with heavy-duty red and black cables',
+        'Amaron Experience Center battery retail showroom featuring automotive and motorcycle battery display shelves and customer service counter',
       enquiryCategory: 'Inverter & Battery Combo' as EnquiryCategory,
       whatsappMessage:
         'Hello Krishna Battery Service, I would like advice on a complete home inverter and battery solution.',
@@ -111,12 +114,22 @@ export function BatteryCategoriesSection({
                     section.imageFirst ? 'lg:order-1' : 'lg:order-2'
                   }`}
                 >
-                  <div className="w-full min-h-[260px] sm:min-h-[340px] rounded-xl overflow-hidden border border-slate-200 bg-white">
+                  <div
+                    className={`w-full min-h-[260px] sm:min-h-[340px] rounded-xl overflow-hidden border border-slate-200 bg-white ${
+                      'imageFit' in section && section.imageFit === 'contain'
+                        ? 'flex items-center justify-center'
+                        : ''
+                    }`}
+                  >
                     <ResilientImage
                       src={section.image}
                       alt={section.imageAlt}
                       fallbackLabel={section.heading}
-                      className="w-full h-full object-cover"
+                      className={`w-full h-full ${
+                        'imageFit' in section && section.imageFit === 'contain'
+                          ? 'object-contain'
+                          : 'object-cover'
+                      }`}
                     />
                   </div>
                 </div>

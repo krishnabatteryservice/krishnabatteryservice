@@ -39,7 +39,7 @@ export interface FaqItem {
 }
 
 export const IMAGES = {
-  heroShowcase: '/src/assets/images/hero_battery_showcase_1795588429117.jpg',
+  heroShowcase: '/src/assets/images/hero_amaron_batteries_1795603793986.jpg',
   carTwoWheeler:
     '/src/assets/images/car_two_wheeler_battery_1795588431694.jpg',
   homeInverter: '/src/assets/images/home_inverter_battery_1795588432641.jpg',
