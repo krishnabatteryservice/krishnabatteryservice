@@ -1,0 +1,6 @@
+{
+  "name": "Krishna Battery Service",
+  "description": "Automobile battery and home inverter battery retail shop in Madhananthapuram, Mugalivakkam, Chennai.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
