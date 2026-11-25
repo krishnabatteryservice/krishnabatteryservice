@@ -66,9 +66,9 @@ export const BUSINESS_INFO = {
   googleMapsDirectionsUrl:
     'https://www.google.com/maps/search/?api=1&query=No.+21,+Madha+Nagar+Main+Road,+Madhananthapuram,+Mugalivakkam,+Chennai+600125,+Tamil+Nadu,+India',
   // Editable placeholders for store-specific operational details
-  hoursPlaceholder: '[Editable: Add Shop Opening Hours, e.g. Mon–Sun, Timing]',
+  hoursPlaceholder: 'Mon – Sat: 9:00 AM – 9:00 PM · Sunday: Holiday',
   emailPlaceholder: '[Editable: Add Business Email Address if Available]',
-  establishedPlaceholder: '[Editable: Add Year Established or Store Milestone]',
+  establishedPlaceholder: 'Established in 2022',
   nearbyAreas: [
     'Mugalivakkam',
     'Madhananthapuram',
@@ -245,6 +245,6 @@ export const FAQ_ITEMS: FaqItem[] = [
     id: 'faq-hours',
     question: 'What are your shop timings and best time to visit?',
     answer:
-      '[Editable: Insert Krishna Battery Service opening and closing hours here.] You can also call 7904055290 before visiting to confirm stock readiness.',
+      'We are open Monday to Saturday from 9:00 AM to 9:00 PM (Sunday is a holiday). You can also call 7904055290 before visiting to confirm stock readiness.',
   },
 ];

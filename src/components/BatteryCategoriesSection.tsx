@@ -20,7 +20,7 @@ export function BatteryCategoriesSection({
       points: [
         'Fitment guidance by vehicle make, model, and fuel type (petrol or diesel).',
         'Options covering compact two-wheeler starter batteries and four-wheeler automotive batteries.',
-        'Stocked Brands: [Editable — Add available car & bike battery brands here].',
+        'Stocked Brands: Amaron car and two-wheeler batteries.',
         'Warranty & Pricing: [Editable — Confirm manufacturer warranty & current pricing at store].',
       ],
       image: IMAGES.carTwoWheeler,
