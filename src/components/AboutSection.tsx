@@ -31,13 +31,13 @@ export function AboutSection() {
               A Local Retail Battery Shop Serving Mugalivakkam &amp; Nearby
               Chennai Areas
             </h2>
-            <p className="text-base text-slate-600 leading-relaxed mb-4">
+            <p className="text-base font-bold text-slate-600 leading-relaxed mb-4">
               Located on Madha Nagar Main Road in Madhananthapuram, Mugalivakkam,
               Krishna Battery Service focuses on helping vehicle owners and
               households choose dependable battery replacements and home power
               backup setups without guesswork.
             </p>
-            <p className="text-base text-slate-600 leading-relaxed mb-8">
+            <p className="text-base font-bold text-slate-600 leading-relaxed mb-8">
               Whether your car is slow to crank, your two-wheeler battery needs
               a fresh replacement, or your home needs a dependable inverter
               battery for Chennai power cuts, you can visit our counter or call
@@ -45,34 +45,34 @@ export function AboutSection() {
             </p>
 
             {/* Clean unboxed hairline specification list (no cards-within-cards) */}
-            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-slate-200">
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-slate-200 font-normal">
               <div>
-                <dt className="text-xs font-medium text-slate-500 mb-1">
+                <dt className="text-xs font-bold text-slate-500 mb-1">
                   Shop Address
                 </dt>
-                <dd className="text-sm font-medium text-slate-900 leading-relaxed">
+                <dd className="text-sm font-bold text-slate-900 leading-relaxed">
                   {BUSINESS_INFO.addressLine1}, {BUSINESS_INFO.addressLine2},{' '}
                   {BUSINESS_INFO.cityStatePin}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs font-medium text-slate-500 mb-1">
+                <dt className="text-xs font-bold text-slate-500 mb-1">
                   Store Timings
                 </dt>
-                <dd className="text-sm font-medium text-slate-700 leading-relaxed">
+                <dd className="text-sm font-bold text-slate-700 leading-relaxed">
                   {BUSINESS_INFO.hoursPlaceholder}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs font-medium text-slate-500 mb-1">
+                <dt className="text-xs font-bold text-slate-500 mb-1">
                   Store Background
                 </dt>
-                <dd className="text-sm font-medium text-slate-700 leading-relaxed">
+                <dd className="text-sm font-bold text-slate-700 leading-relaxed">
                   {BUSINESS_INFO.establishedPlaceholder}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs font-medium text-slate-500 mb-1">
+                <dt className="text-xs font-bold text-slate-500 mb-1">
                   Quick Store Enquiry
                 </dt>
                 <dd className="flex flex-wrap items-center gap-4 text-sm font-semibold">

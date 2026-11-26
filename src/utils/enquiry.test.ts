@@ -98,9 +98,18 @@ test('filterCatalogItems filters accurately by category and all', () => {
   const all = filterCatalogItems(CATALOG_ITEMS, 'all');
   assert.equal(all.length, CATALOG_ITEMS.length);
 
-  const autoOnly = filterCatalogItems(CATALOG_ITEMS, 'car-two-wheeler');
-  assert.ok(autoOnly.length >= 1);
-  assert.ok(autoOnly.every((item) => item.category === 'car-two-wheeler'));
+  const carOnly = filterCatalogItems(CATALOG_ITEMS, 'car-battery');
+  assert.ok(carOnly.length >= 1);
+  assert.ok(carOnly.every((item) => item.category === 'car-battery'));
+
+  const twoWheelerOnly = filterCatalogItems(
+    CATALOG_ITEMS,
+    'two-wheeler-battery',
+  );
+  assert.ok(twoWheelerOnly.length >= 1);
+  assert.ok(
+    twoWheelerOnly.every((item) => item.category === 'two-wheeler-battery'),
+  );
 
   const inverterOnly = filterCatalogItems(CATALOG_ITEMS, 'home-inverter');
   assert.ok(inverterOnly.length >= 1);

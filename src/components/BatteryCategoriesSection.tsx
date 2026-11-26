@@ -81,7 +81,7 @@ export function BatteryCategoriesSection({
       id="batteries"
       className="py-16 lg:py-24 bg-slate-50 border-b border-slate-200"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-bold">
         <div className="max-w-3xl mb-14 lg:mb-20">
           <p className="text-sm font-semibold text-amber-700 mb-3">
             Core Battery Categories
@@ -149,11 +149,22 @@ export function BatteryCategoriesSection({
                   <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-navy-900 mb-4">
                     {section.heading}
                   </h3>
-                  <p className="text-base text-slate-600 leading-relaxed mb-6">
+                  <p
+                    className={`text-base text-slate-600 leading-relaxed mb-6${
+                      section.id === 'home-inverter' ? ' font-bold' : ''
+                    }`}
+                  >
                     {section.body}
                   </p>
 
-                  <ul className="space-y-2.5 mb-8 border-t border-slate-200 pt-5">
+                  <ul
+                    className={`space-y-2.5 mb-8 border-t border-slate-200 pt-5${
+                      section.id === 'car-two-wheeler' ||
+                      section.id === 'home-inverter'
+                        ? ' font-bold'
+                        : ''
+                    }`}
+                  >
                     {section.points.map((point, idx) => (
                       <li
                         key={idx}
