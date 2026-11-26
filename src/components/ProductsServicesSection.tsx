@@ -438,7 +438,7 @@ export function ProductsServicesSection({
             data-testid="catalog-grid"
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {visibleItems.map((item) => {
+            {visibleItems.map((item, index) => {
               const waUrl = buildWhatsAppUrl(
                 BUSINESS_INFO.whatsappNumber,
                 item.whatsappPrompt,
@@ -524,7 +524,11 @@ export function ProductsServicesSection({
                     <h3 className="font-display text-lg font-bold text-navy-900 leading-snug mb-2">
                       {item.title}
                     </h3>
-                    <p className="text-sm text-slate-600 leading-relaxed mb-4">
+                    <p
+                      className={`text-sm text-slate-600 leading-relaxed mb-4${
+                        index === 0 ? ' font-bold' : ''
+                      }`}
+                    >
                       {item.summary}
                     </p>
 

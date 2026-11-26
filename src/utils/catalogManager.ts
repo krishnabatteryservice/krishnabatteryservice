@@ -368,3 +368,15 @@ export function parseStoredCatalog(
     return [...fallback];
   }
 }
+
+/**
+ * Checks whether owner catalog management mode is explicitly enabled via URL
+ * query parameter (e.g. ?manage=1 or ?edit=1). Public visitors never see edit
+ * controls by default.
+ */
+export function isManageModeFromSearch(search: string): boolean {
+  const params = new URLSearchParams(search);
+  const manage = params.get('manage');
+  const edit = params.get('edit');
+  return manage === '1' || manage === 'true' || edit === '1' || edit === 'true';
+}

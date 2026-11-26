@@ -7,6 +7,7 @@ import {
   createEmptyBatteryDraft,
   filterAndSearchBatteries,
   generateBatteryItemId,
+  isManageModeFromSearch,
   itemToBatteryDraft,
   mapCatalogItemToEnquiryCategory,
   parseStoredCatalog,
@@ -164,4 +165,13 @@ test('parseStoredCatalog handles valid JSON, legacy migration, empty list, and c
   assert.equal(migrated.length, 2);
   assert.equal(migrated[0].category, 'car-battery');
   assert.equal(migrated[1].category, 'two-wheeler-battery');
+});
+
+test('isManageModeFromSearch stays disabled for public URLs and enables for manage query param', () => {
+  assert.equal(isManageModeFromSearch(''), false);
+  assert.equal(isManageModeFromSearch('?utm_source=maps'), false);
+  assert.equal(isManageModeFromSearch('?manage=0'), false);
+  assert.equal(isManageModeFromSearch('?manage=1'), true);
+  assert.equal(isManageModeFromSearch('?manage=true'), true);
+  assert.equal(isManageModeFromSearch('?edit=1'), true);
 });
