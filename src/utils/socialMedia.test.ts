@@ -56,15 +56,15 @@ test('parseReelEmbedUrl extracts YouTube Shorts, Instagram Reels, Facebook Reels
   assert.equal(fbReel.platform, 'facebook');
   assert.match(fbReel.embedUrl ?? '', /^https:\/\/www\.facebook\.com\/plugins\/video\.php\?href=/);
 
-  const xPost = parseReelEmbedUrl(
-    'https://x.com/krishnabattery/status/1800000000000000000',
-    'x',
+  const gbpLink = parseReelEmbedUrl(
+    'https://g.page/r/krishna-battery-service',
+    'google-business',
   );
-  assert.equal(xPost.canEmbed, false);
-  assert.equal(xPost.platform, 'x');
+  assert.equal(gbpLink.canEmbed, false);
+  assert.equal(gbpLink.platform, 'google-business');
   assert.equal(
-    xPost.externalUrl,
-    'https://x.com/krishnabattery/status/1800000000000000000',
+    gbpLink.externalUrl,
+    'https://g.page/r/krishna-battery-service',
   );
 });
 

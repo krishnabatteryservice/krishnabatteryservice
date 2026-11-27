@@ -1,4 +1,8 @@
-export type SocialPlatform = 'instagram' | 'facebook' | 'youtube' | 'x';
+export type SocialPlatform =
+  | 'instagram'
+  | 'facebook'
+  | 'youtube'
+  | 'google-business';
 export type SocialReelFilter = 'all' | SocialPlatform;
 
 export interface SocialProfile {
@@ -46,14 +50,14 @@ export const SOCIAL_PLATFORM_LABELS: Record<SocialPlatform, string> = {
   instagram: 'Instagram',
   facebook: 'Facebook',
   youtube: 'YouTube',
-  x: 'X',
+  'google-business': 'Google Business',
 };
 
 export const REEL_PLATFORM_BADGE_LABELS: Record<SocialPlatform, string> = {
   instagram: 'Instagram Reel',
   facebook: 'Facebook Reel',
   youtube: 'YouTube Short',
-  x: 'X Video Post',
+  'google-business': 'Google Business',
 };
 
 /**
@@ -183,12 +187,17 @@ export function parseReelEmbedUrl(
     };
   }
 
-  // X / Twitter
-  if (host === 'x.com' || host === 'twitter.com' || host === 'mobile.twitter.com') {
+  // Google Business Profile / Google Maps share links
+  if (
+    host === 'g.page' ||
+    host === 'maps.app.goo.gl' ||
+    host === 'business.google.com' ||
+    (host === 'google.com' && pathname.startsWith('/maps'))
+  ) {
     return {
       embedUrl: null,
       externalUrl: safeUrl,
-      platform: 'x',
+      platform: 'google-business',
       canEmbed: false,
     };
   }
@@ -239,7 +248,7 @@ export function validateReelDraft(draft: ReelDraft): {
   }
   if (draft.reelUrl.trim() && !normalizeSocialUrl(draft.reelUrl)) {
     errors.reelUrl =
-      'Enter a valid http(s) Instagram, Facebook, YouTube, or X link.';
+      'Enter a valid http(s) Instagram, Facebook, YouTube, or Google Business link.';
   }
   return {
     valid: Object.keys(errors).length === 0,
@@ -273,7 +282,7 @@ export function parseStoredSocialMedia(
       'instagram',
       'facebook',
       'youtube',
-      'x',
+      'google-business',
     ]);
 
     const profiles = Array.isArray(data.profiles)

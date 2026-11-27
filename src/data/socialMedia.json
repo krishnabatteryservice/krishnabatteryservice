@@ -22,11 +22,11 @@
       "description": "YouTube Shorts covering car battery testing, inverter load guidance, and battery care."
     },
     {
-      "platform": "x",
-      "name": "X",
-      "handle": "@krishnabattery",
+      "platform": "google-business",
+      "name": "Google Business",
+      "handle": "Krishna Battery Service · Mugalivakkam",
       "url": "",
-      "description": "Quick store updates, power-cut readiness tips, and battery availability notices."
+      "description": "Showroom photos, Google customer reviews, shop directions, and local store updates."
     }
   ],
   "reels": [
@@ -59,7 +59,7 @@
     },
     {
       "id": "reel-battery-testing-check",
-      "platform": "x",
+      "platform": "google-business",
       "title": "How to Spot a Weak Car Starter Battery Early",
       "caption": "Quick voltage check signs to watch for before a slow morning crank turns into a stranded vehicle.",
       "reelUrl": "",

@@ -44,7 +44,7 @@ const REEL_FILTER_TABS: {id: SocialReelFilter; label: string}[] = [
   {id: 'instagram', label: 'Instagram'},
   {id: 'youtube', label: 'YouTube Shorts'},
   {id: 'facebook', label: 'Facebook'},
-  {id: 'x', label: 'X'},
+  {id: 'google-business', label: 'Google Business'},
 ];
 
 const PRESET_REEL_COVERS = [
@@ -94,10 +94,10 @@ const PLATFORM_ACCENT_STYLES: Record<
     iconText: 'text-red-700',
     hoverBorder: 'hover:border-red-300',
   },
-  x: {
-    iconBg: 'bg-slate-200/80',
-    iconText: 'text-slate-900',
-    hoverBorder: 'hover:border-slate-400',
+  'google-business': {
+    iconBg: 'bg-emerald-50',
+    iconText: 'text-emerald-700',
+    hoverBorder: 'hover:border-emerald-300',
   },
 };
 
@@ -203,7 +203,9 @@ export function SocialMediaReelsSection() {
       youtube: socialData.reels.filter((r) => r.platform === 'youtube').length,
       facebook: socialData.reels.filter((r) => r.platform === 'facebook')
         .length,
-      x: socialData.reels.filter((r) => r.platform === 'x').length,
+      'google-business': socialData.reels.filter(
+        (r) => r.platform === 'google-business',
+      ).length,
     };
   }, [socialData.reels]);
 
@@ -265,7 +267,7 @@ export function SocialMediaReelsSection() {
     setSocialData(nextData);
     saveSocialDraftToBrowser(nextData);
     setStatusNotice(
-      'Updated your Instagram, Facebook, YouTube, and X account links. Open the "Publish to GitHub" tab to save into src/data/socialMedia.json.',
+      'Updated your Instagram, Facebook, YouTube, and Google Business links. Open the "Publish to GitHub" tab to save into src/data/socialMedia.json.',
     );
   }
 
@@ -463,8 +465,8 @@ export function SocialMediaReelsSection() {
             </h2>
             <p className="text-base text-slate-600 leading-relaxed">
               Connect with our Mugalivakkam battery showroom on Instagram,
-              Facebook, YouTube, and X for quick battery care reels, vehicle
-              fitment clips, and home inverter tips.
+              Facebook, YouTube, and Google Business for quick battery care
+              reels, vehicle fitment clips, and store updates.
             </p>
           </div>
 
@@ -643,7 +645,11 @@ export function SocialMediaReelsSection() {
                                 ),
                               );
                             }}
-                            placeholder={`https://${profile.platform === 'x' ? 'x.com' : `${profile.platform}.com`}/your-account`}
+                            placeholder={
+                              profile.platform === 'google-business'
+                                ? 'https://g.page/r/your-business-profile'
+                                : `https://${profile.platform}.com/your-account`
+                            }
                             className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:outline-none focus:border-navy-900"
                           />
                         </div>
@@ -694,7 +700,9 @@ export function SocialMediaReelsSection() {
                         <option value="instagram">Instagram Reel</option>
                         <option value="youtube">YouTube Short</option>
                         <option value="facebook">Facebook Reel</option>
-                        <option value="x">X Video Post</option>
+                        <option value="google-business">
+                          Google Business Update
+                        </option>
                       </select>
                     </div>
 
@@ -703,7 +711,7 @@ export function SocialMediaReelsSection() {
                         htmlFor="reel-url"
                         className="block text-xs font-semibold text-slate-700 mb-1"
                       >
-                        Reel / Short Video Link (Instagram, YouTube, Facebook, or X)
+                        Reel / Short Video Link (Instagram, YouTube, Facebook, or Google Business)
                       </label>
                       <input
                         id="reel-url"
@@ -884,8 +892,8 @@ export function SocialMediaReelsSection() {
                       Save Directly to Project Files
                     </h4>
                     <p className="text-xs sm:text-sm text-slate-600 mb-4 leading-relaxed">
-                      Saves your linked Instagram, Facebook, YouTube, and X
-                      accounts plus all reels into{' '}
+                      Saves your linked Instagram, Facebook, YouTube, and Google
+                      Business accounts plus all reels into{' '}
                       <code className="font-mono text-xs text-navy-900">
                         src/data/socialMedia.json
                       </code>{' '}
@@ -1014,7 +1022,11 @@ export function SocialMediaReelsSection() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-semibold text-navy-900 hover:text-amber-700 transition-colors"
                     >
-                      <span>Follow on {profile.name}</span>
+                      <span>
+                        {profile.platform === 'google-business'
+                          ? 'View on Google Business'
+                          : `Follow on ${profile.name}`}
+                      </span>
                       <ArrowUpRight
                         className="w-4 h-4 shrink-0"
                         aria-hidden="true"
@@ -1089,8 +1101,8 @@ export function SocialMediaReelsSection() {
               No reels added for this platform yet
             </p>
             <p className="text-sm text-slate-600 mb-5">
-              Paste an Instagram Reel, YouTube Short, Facebook Reel, or X video
-              link to showcase it right here.
+              Paste an Instagram Reel, YouTube Short, Facebook Reel, or Google
+              Business post link to showcase it right here.
             </p>
             <button
               type="button"

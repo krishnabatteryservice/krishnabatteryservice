@@ -238,7 +238,7 @@ function catalogFileSyncPlugin(rootDir: string): Plugin {
         'instagram',
         'facebook',
         'youtube',
-        'x',
+        'google-business',
       ]);
 
       server.middlewares.use('/__api/social', (req, res, next) => {
