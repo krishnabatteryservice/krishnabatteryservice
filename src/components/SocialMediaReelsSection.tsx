@@ -23,6 +23,7 @@ import {
   SOCIAL_STORAGE_KEY,
   filterReelsByPlatform,
   generateReelId,
+  isSocialOwnerMode,
   normalizeSocialUrl,
   parseReelEmbedUrl,
   parseStoredSocialMedia,
@@ -103,8 +104,8 @@ const PLATFORM_ACCENT_STYLES: Record<
 
 const MAX_THUMBNAIL_BYTES = 1.5 * 1024 * 1024;
 
-function loadInitialSocialData(): SocialMediaData {
-  if (typeof window === 'undefined') {
+function loadInitialSocialData(ownerMode: boolean): SocialMediaData {
+  if (!ownerMode || typeof window === 'undefined') {
     return CANONICAL_SOCIAL_DATA;
   }
   try {
@@ -147,11 +148,16 @@ function createEmptyReelDraft(platform: SocialPlatform = 'instagram'): ReelDraft
 }
 
 export function SocialMediaReelsSection() {
+  const isOwnerMode = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return isSocialOwnerMode(window.location.search);
+  }, []);
+
   const [publishedData, setPublishedData] = useState<SocialMediaData>(
     CANONICAL_SOCIAL_DATA,
   );
-  const [socialData, setSocialData] = useState<SocialMediaData>(
-    loadInitialSocialData,
+  const [socialData, setSocialData] = useState<SocialMediaData>(() =>
+    loadInitialSocialData(isOwnerMode),
   );
   const [activeFilter, setActiveFilter] = useState<SocialReelFilter>('all');
   const [playingReelId, setPlayingReelId] = useState<string | null>(null);
@@ -470,42 +476,44 @@ export function SocialMediaReelsSection() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5 self-start lg:self-end shrink-0">
-            <button
-              type="button"
-              onClick={() => {
-                if (manageOpen) {
-                  setManageOpen(false);
-                } else {
-                  openProfilesManager();
-                }
-              }}
-              aria-expanded={manageOpen}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg border transition-colors whitespace-nowrap ${
-                manageOpen || hasUnsavedChanges
-                  ? 'bg-navy-900 text-white border-navy-900 hover:bg-navy-800'
-                  : 'bg-white text-navy-900 border-slate-300 hover:border-navy-900'
-              }`}
-            >
-              <Settings2 className="w-4 h-4" aria-hidden="true" />
-              <span>
-                {manageOpen ? 'Close Manager' : 'Manage Accounts & Reels'}
-              </span>
-            </button>
+          {isOwnerMode && (
+            <div className="flex flex-wrap items-center gap-2.5 self-start lg:self-end shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  if (manageOpen) {
+                    setManageOpen(false);
+                  } else {
+                    openProfilesManager();
+                  }
+                }}
+                aria-expanded={manageOpen}
+                className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg border transition-colors whitespace-nowrap ${
+                  manageOpen || hasUnsavedChanges
+                    ? 'bg-navy-900 text-white border-navy-900 hover:bg-navy-800'
+                    : 'bg-white text-navy-900 border-slate-300 hover:border-navy-900'
+                }`}
+              >
+                <Settings2 className="w-4 h-4" aria-hidden="true" />
+                <span>
+                  {manageOpen ? 'Close Manager' : 'Manage Accounts & Reels'}
+                </span>
+              </button>
 
-            <button
-              type="button"
-              onClick={() => openAddReelManager()}
-              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-navy-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors whitespace-nowrap"
-            >
-              <Plus className="w-4 h-4" aria-hidden="true" />
-              <span>Add Reel</span>
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={() => openAddReelManager()}
+                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-navy-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors whitespace-nowrap"
+              >
+                <Plus className="w-4 h-4" aria-hidden="true" />
+                <span>Add Reel</span>
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Status banner */}
-        {statusNotice && (
+        {/* Status banner (owner mode only) */}
+        {isOwnerMode && statusNotice && (
           <div
             role="status"
             className="mb-8 flex items-center justify-between gap-3 px-4 py-3 rounded-lg bg-emerald-50 border border-emerald-200 text-sm text-emerald-900"
@@ -522,9 +530,9 @@ export function SocialMediaReelsSection() {
           </div>
         )}
 
-        {/* Inline Manage Accounts / Add Reel / Publish Panel */}
+        {/* Inline Manage Accounts / Add Reel / Publish Panel (owner mode only) */}
         <div ref={managePanelRef} className="scroll-mt-24">
-          {manageOpen && (
+          {isOwnerMode && manageOpen && (
             <div
               data-testid="social-manager-panel"
               className="mb-10 rounded-xl border border-navy-900/20 bg-slate-50 p-5 sm:p-6 shadow-sm"
@@ -1032,7 +1040,7 @@ export function SocialMediaReelsSection() {
                         aria-hidden="true"
                       />
                     </a>
-                  ) : (
+                  ) : isOwnerMode ? (
                     <button
                       type="button"
                       onClick={openProfilesManager}
@@ -1041,6 +1049,10 @@ export function SocialMediaReelsSection() {
                       <span>Connect {profile.name} URL</span>
                       <Link2 className="w-4 h-4 shrink-0" aria-hidden="true" />
                     </button>
+                  ) : (
+                    <span className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-medium text-slate-500">
+                      <span>Official {profile.name} Channel</span>
+                    </span>
                   )}
                 </div>
               </div>
@@ -1101,21 +1113,24 @@ export function SocialMediaReelsSection() {
               No reels added for this platform yet
             </p>
             <p className="text-sm text-slate-600 mb-5">
-              Paste an Instagram Reel, YouTube Short, Facebook Reel, or Google
-              Business post link to showcase it right here.
+              {isOwnerMode
+                ? 'Paste an Instagram Reel, YouTube Short, Facebook Reel, or Google Business post link to showcase it right here.'
+                : 'New short reels for this channel will appear here soon.'}
             </p>
-            <button
-              type="button"
-              onClick={() =>
-                openAddReelManager(
-                  activeFilter === 'all' ? 'instagram' : activeFilter,
-                )
-              }
-              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-navy-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors"
-            >
-              <Plus className="w-4 h-4" aria-hidden="true" />
-              <span>Add First Reel</span>
-            </button>
+            {isOwnerMode && (
+              <button
+                type="button"
+                onClick={() =>
+                  openAddReelManager(
+                    activeFilter === 'all' ? 'instagram' : activeFilter,
+                  )
+                }
+                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-navy-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors"
+              >
+                <Plus className="w-4 h-4" aria-hidden="true" />
+                <span>Add First Reel</span>
+              </button>
+            )}
           </div>
         ) : (
           <div
@@ -1184,43 +1199,47 @@ export function SocialMediaReelsSection() {
                         </div>
 
                         {/* Center Play / Link Trigger */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          {embedInfo.canEmbed ? (
-                            <button
-                              type="button"
-                              onClick={() => setPlayingReelId(reel.id)}
-                              aria-label={`Play ${reel.title}`}
-                              className="w-14 h-14 rounded-full bg-amber-400 hover:bg-amber-300 text-navy-950 inline-flex items-center justify-center shadow-lg transition-transform hover:scale-105"
-                            >
-                              <Play
-                                className="w-6 h-6 fill-current ml-0.5"
-                                aria-hidden="true"
-                              />
-                            </button>
-                          ) : embedInfo.externalUrl ? (
-                            <a
-                              href={embedInfo.externalUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              aria-label={`Watch ${reel.title} on ${SOCIAL_PLATFORM_LABELS[reel.platform]}`}
-                              className="w-14 h-14 rounded-full bg-amber-400 hover:bg-amber-300 text-navy-950 inline-flex items-center justify-center shadow-lg transition-transform hover:scale-105"
-                            >
-                              <Play
-                                className="w-6 h-6 fill-current ml-0.5"
-                                aria-hidden="true"
-                              />
-                            </a>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => openEditReelManager(reel)}
-                              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-navy-950 text-xs font-semibold shadow-lg transition-colors"
-                            >
-                              <Link2 className="w-4 h-4" aria-hidden="true" />
-                              <span>Paste Reel Link</span>
-                            </button>
-                          )}
-                        </div>
+                        {(embedInfo.canEmbed ||
+                          embedInfo.externalUrl ||
+                          isOwnerMode) && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            {embedInfo.canEmbed ? (
+                              <button
+                                type="button"
+                                onClick={() => setPlayingReelId(reel.id)}
+                                aria-label={`Play ${reel.title}`}
+                                className="w-14 h-14 rounded-full bg-amber-400 hover:bg-amber-300 text-navy-950 inline-flex items-center justify-center shadow-lg transition-transform hover:scale-105"
+                              >
+                                <Play
+                                  className="w-6 h-6 fill-current ml-0.5"
+                                  aria-hidden="true"
+                                />
+                              </button>
+                            ) : embedInfo.externalUrl ? (
+                              <a
+                                href={embedInfo.externalUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`Watch ${reel.title} on ${SOCIAL_PLATFORM_LABELS[reel.platform]}`}
+                                className="w-14 h-14 rounded-full bg-amber-400 hover:bg-amber-300 text-navy-950 inline-flex items-center justify-center shadow-lg transition-transform hover:scale-105"
+                              >
+                                <Play
+                                  className="w-6 h-6 fill-current ml-0.5"
+                                  aria-hidden="true"
+                                />
+                              </a>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => openEditReelManager(reel)}
+                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-navy-950 text-xs font-semibold shadow-lg transition-colors"
+                              >
+                                <Link2 className="w-4 h-4" aria-hidden="true" />
+                                <span>Paste Reel Link</span>
+                              </button>
+                            )}
+                          </div>
+                        )}
 
                         {/* Bottom reel title overlay */}
                         <div className="absolute bottom-0 inset-x-0 p-4">
@@ -1254,35 +1273,39 @@ export function SocialMediaReelsSection() {
                       </a>
                     ) : (
                       <span className="text-xs font-medium text-slate-500 truncate">
-                        Ready for your reel URL
+                        {isOwnerMode
+                          ? 'Ready for your reel URL'
+                          : SOCIAL_PLATFORM_LABELS[reel.platform]}
                       </span>
                     )}
 
-                    <div className="flex items-center gap-1 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => openEditReelManager(reel)}
-                        aria-label={`Edit ${reel.title}`}
-                        className="p-1.5 text-slate-600 hover:text-navy-900 hover:bg-slate-100 rounded-md transition-colors"
-                      >
-                        <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setConfirmDeleteReelId(
-                            isConfirmingDelete ? null : reel.id,
-                          )
-                        }
-                        aria-label={`Remove ${reel.title}`}
-                        className="p-1.5 text-slate-500 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
-                      </button>
-                    </div>
+                    {isOwnerMode && (
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => openEditReelManager(reel)}
+                          aria-label={`Edit ${reel.title}`}
+                          className="p-1.5 text-slate-600 hover:text-navy-900 hover:bg-slate-100 rounded-md transition-colors"
+                        >
+                          <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setConfirmDeleteReelId(
+                              isConfirmingDelete ? null : reel.id,
+                            )
+                          }
+                          aria-label={`Remove ${reel.title}`}
+                          className="p-1.5 text-slate-500 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                        </button>
+                      </div>
+                    )}
                   </div>
 
-                  {isConfirmingDelete && (
+                  {isOwnerMode && isConfirmingDelete && (
                     <div className="px-3 py-2 bg-red-50 border-t border-red-200 flex items-center justify-between gap-2 text-xs text-red-900">
                       <span className="font-medium">Remove reel?</span>
                       <div className="flex items-center gap-1.5">

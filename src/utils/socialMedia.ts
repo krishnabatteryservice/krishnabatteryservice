@@ -323,3 +323,20 @@ export function parseStoredSocialMedia(
     };
   }
 }
+
+/**
+ * Restricts Social Media & Reels editing strictly to private owner mode
+ * (?owner=1 or ?manage=1). Public visitors always get a read-only view.
+ */
+export function isSocialOwnerMode(search: string): boolean {
+  const params = new URLSearchParams(search);
+  const owner = params.get('owner');
+  const manage = params.get('manage');
+  return (
+    owner === '1' ||
+    owner === 'true' ||
+    manage === '1' ||
+    manage === 'true'
+  );
+}
+

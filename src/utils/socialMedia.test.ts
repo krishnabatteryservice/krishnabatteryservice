@@ -5,6 +5,7 @@ import {
   filterReelsByPlatform,
   generateReelId,
   isSafeHttpUrl,
+  isSocialOwnerMode,
   normalizeSocialUrl,
   parseReelEmbedUrl,
   parseStoredSocialMedia,
@@ -25,7 +26,7 @@ test('isSafeHttpUrl and normalizeSocialUrl allow https/http and block unsafe sch
   assert.equal(normalizeSocialUrl('javascript:alert(1)'), '');
 });
 
-test('parseReelEmbedUrl extracts YouTube Shorts, Instagram Reels, Facebook Reels, and X links cleanly', () => {
+test('parseReelEmbedUrl extracts YouTube Shorts, Instagram Reels, Facebook Reels, and Google Business links cleanly', () => {
   const ytShort = parseReelEmbedUrl(
     'https://www.youtube.com/shorts/dQw4w9WgXcQ',
     'youtube',
@@ -108,4 +109,13 @@ test('parseStoredSocialMedia handles null, corrupt JSON, and valid stored payloa
   const parsed = parseStoredSocialMedia(custom, FALLBACK_DATA);
   assert.equal(parsed.reels.length, 1);
   assert.equal(parsed.profiles.length, 4);
+});
+
+test('isSocialOwnerMode restricts public visitors and only enables on explicit owner/manage query param', () => {
+  assert.equal(isSocialOwnerMode(''), false);
+  assert.equal(isSocialOwnerMode('?utm_source=instagram'), false);
+  assert.equal(isSocialOwnerMode('?owner=0'), false);
+  assert.equal(isSocialOwnerMode('?owner=1'), true);
+  assert.equal(isSocialOwnerMode('?owner=true'), true);
+  assert.equal(isSocialOwnerMode('?manage=1'), true);
 });
