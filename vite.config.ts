@@ -425,6 +425,296 @@ function catalogFileSyncPlugin(rootDir: string): Plugin {
           }
         });
       });
+
+      const validGalleryCategories = new Set([
+        'showroom',
+        'automotive',
+        'home-inverter',
+        'service',
+      ]);
+      const MAX_GALLERY_PHOTOS_SERVER = 1000;
+      const MAX_GALLERY_IMAGE_BYTES_SERVER = 5 * 1024 * 1024; // 5 MB per photo
+      const ALLOWED_GALLERY_IMAGE_EXTS = new Set(['png', 'jpg', 'jpeg', 'webp']);
+
+      server.middlewares.use('/__api/gallery/upload-photo', (req, res, next) => {
+        if (req.method !== 'POST') {
+          next();
+          return;
+        }
+        const rawNameHeader = req.headers['x-photo-filename'];
+        const rawFilename =
+          typeof rawNameHeader === 'string'
+            ? decodeURIComponent(rawNameHeader)
+            : 'photo.jpg';
+        const rawExt = path.extname(rawFilename).toLowerCase().replace(/^\./, '');
+        if (!ALLOWED_GALLERY_IMAGE_EXTS.has(rawExt)) {
+          res.statusCode = 400;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(
+            JSON.stringify({
+              error: 'Unsupported image format. Please upload PNG, JPG, or WebP.',
+            }),
+          );
+          return;
+        }
+        const ext = rawExt === 'jpeg' ? 'jpg' : rawExt;
+
+        const chunks: Buffer[] = [];
+        let totalBytes = 0;
+        let aborted = false;
+
+        req.on('data', (chunk: Buffer) => {
+          if (aborted) return;
+          totalBytes += chunk.length;
+          if (totalBytes > MAX_GALLERY_IMAGE_BYTES_SERVER) {
+            aborted = true;
+            res.statusCode = 413;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(
+              JSON.stringify({error: 'Photo exceeds the 5 MB per-photo limit.'}),
+            );
+            req.destroy();
+            return;
+          }
+          chunks.push(chunk);
+        });
+
+        req.on('end', () => {
+          if (aborted) return;
+          try {
+            const imgBuffer = Buffer.concat(chunks);
+            if (imgBuffer.length === 0) {
+              res.statusCode = 400;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({error: 'Uploaded photo is empty.'}));
+              return;
+            }
+            const galleryAssetsDir = path.resolve(rootDir, 'public/assets/gallery');
+            const baseSlug = sanitizeFilenameSlug(
+              path.basename(rawFilename, path.extname(rawFilename)),
+            );
+            const hash = crypto
+              .createHash('sha1')
+              .update(imgBuffer)
+              .digest('hex')
+              .slice(0, 8);
+            const safeFilename = `${baseSlug}-${hash}.${ext}`;
+            fs.mkdirSync(galleryAssetsDir, {recursive: true});
+            const destPath = path.resolve(galleryAssetsDir, safeFilename);
+            if (!destPath.startsWith(galleryAssetsDir + path.sep)) {
+              res.statusCode = 400;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({error: 'Invalid photo destination path.'}));
+              return;
+            }
+            fs.writeFileSync(destPath, imgBuffer);
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(
+              JSON.stringify({
+                ok: true,
+                url: `/assets/gallery/${safeFilename}`,
+              }),
+            );
+          } catch {
+            res.statusCode = 500;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({error: 'Failed to save uploaded photo.'}));
+          }
+        });
+      });
+
+      server.middlewares.use('/__api/gallery', (req, res, next) => {
+        if (req.url && req.url.startsWith('/upload-photo')) {
+          next();
+          return;
+        }
+        const galleryPath = path.resolve(rootDir, 'src/data/mediaGallery.json');
+        if (req.method === 'GET') {
+          try {
+            const content = fs.readFileSync(galleryPath, 'utf-8');
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(content);
+          } catch {
+            res.statusCode = 500;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(
+              JSON.stringify({error: 'Unable to read src/data/mediaGallery.json'}),
+            );
+          }
+          return;
+        }
+
+        if (req.method !== 'POST') {
+          next();
+          return;
+        }
+
+        const chunks: Buffer[] = [];
+        let totalBytes = 0;
+        let aborted = false;
+
+        req.on('data', (chunk: Buffer) => {
+          if (aborted) return;
+          totalBytes += chunk.length;
+          if (totalBytes > MAX_BODY_BYTES) {
+            aborted = true;
+            res.statusCode = 413;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({error: 'Payload exceeds 12 MB limit.'}));
+            req.destroy();
+            return;
+          }
+          chunks.push(chunk);
+        });
+
+        req.on('end', () => {
+          if (aborted) return;
+          try {
+            const rawBody = Buffer.concat(chunks).toString('utf-8');
+            const parsed = JSON.parse(rawBody) as {items?: unknown};
+            if (!Array.isArray(parsed.items)) {
+              res.statusCode = 400;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(
+                JSON.stringify({
+                  error: 'Expected JSON body with an "items" array.',
+                }),
+              );
+              return;
+            }
+            if (parsed.items.length > MAX_GALLERY_PHOTOS_SERVER) {
+              res.statusCode = 400;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(
+                JSON.stringify({
+                  error: `Gallery cannot exceed ${MAX_GALLERY_PHOTOS_SERVER.toLocaleString()} photos.`,
+                }),
+              );
+              return;
+            }
+
+            const galleryAssetsDir = path.resolve(rootDir, 'public/assets/gallery');
+            const sanitizedItems = [];
+            for (const entry of parsed.items) {
+              const item = entry as Record<string, unknown>;
+              if (
+                typeof item !== 'object' ||
+                item === null ||
+                typeof item.id !== 'string' ||
+                !item.id.trim() ||
+                typeof item.category !== 'string' ||
+                !validGalleryCategories.has(item.category) ||
+                typeof item.categoryLabel !== 'string' ||
+                typeof item.title !== 'string' ||
+                item.title.trim().length < 2 ||
+                typeof item.caption !== 'string' ||
+                typeof item.src !== 'string' ||
+                !item.src.trim() ||
+                typeof item.alt !== 'string'
+              ) {
+                res.statusCode = 400;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(
+                  JSON.stringify({error: 'Invalid gallery photo entry.'}),
+                );
+                return;
+              }
+
+              let imgSrc = item.src.trim();
+              const dataUriMatch = imgSrc.match(
+                /^data:image\/(png|jpeg|jpg|webp);base64,([A-Za-z0-9+/=]+)$/,
+              );
+              if (dataUriMatch) {
+                const rawExt = dataUriMatch[1].toLowerCase();
+                const ext = rawExt === 'jpeg' ? 'jpg' : rawExt;
+                const imgBuffer = Buffer.from(dataUriMatch[2], 'base64');
+                if (imgBuffer.length > MAX_GALLERY_IMAGE_BYTES_SERVER) {
+                  res.statusCode = 400;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.end(
+                    JSON.stringify({
+                      error: `Photo "${item.title}" exceeds 5 MB limit.`,
+                    }),
+                  );
+                  return;
+                }
+                const hash = crypto
+                  .createHash('sha1')
+                  .update(imgBuffer)
+                  .digest('hex')
+                  .slice(0, 8);
+                const safeFilename = `${sanitizeFilenameSlug(item.id)}-${hash}.${ext}`;
+                fs.mkdirSync(galleryAssetsDir, {recursive: true});
+                const destPath = path.resolve(galleryAssetsDir, safeFilename);
+                if (!destPath.startsWith(galleryAssetsDir + path.sep)) {
+                  res.statusCode = 400;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.end(JSON.stringify({error: 'Invalid photo path.'}));
+                  return;
+                }
+                fs.writeFileSync(destPath, imgBuffer);
+                imgSrc = `/assets/gallery/${safeFilename}`;
+              } else {
+                const isSafeLocalPath =
+                  (imgSrc.startsWith('/assets/') ||
+                    imgSrc.startsWith('/src/assets/')) &&
+                  !imgSrc.includes('..');
+                let isSafeRemote = false;
+                if (!isSafeLocalPath) {
+                  try {
+                    const u = new URL(imgSrc);
+                    isSafeRemote = u.protocol === 'https:' || u.protocol === 'http:';
+                  } catch {
+                    isSafeRemote = false;
+                  }
+                }
+                if (!isSafeLocalPath && !isSafeRemote) {
+                  res.statusCode = 400;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.end(
+                    JSON.stringify({error: 'Unsupported photo URL or path.'}),
+                  );
+                  return;
+                }
+              }
+
+              const fit = item.fit === 'contain' ? 'contain' : 'cover';
+              sanitizedItems.push({
+                id: item.id.trim(),
+                category: item.category,
+                categoryLabel: item.categoryLabel.trim(),
+                title: item.title.trim(),
+                caption: item.caption.trim(),
+                src: imgSrc,
+                alt: item.alt.trim(),
+                fit,
+              });
+            }
+
+            fs.writeFileSync(
+              galleryPath,
+              `${JSON.stringify(sanitizedItems, null, 2)}\n`,
+              'utf-8',
+            );
+
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(
+              JSON.stringify({
+                ok: true,
+                filePath: 'src/data/mediaGallery.json',
+                items: sanitizedItems,
+              }),
+            );
+          } catch {
+            res.statusCode = 400;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({error: 'Invalid JSON payload.'}));
+          }
+        });
+      });
     },
   };
 }

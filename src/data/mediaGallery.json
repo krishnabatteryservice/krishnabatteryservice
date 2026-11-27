@@ -1,0 +1,102 @@
+[
+  {
+    "id": "gallery-krishna-service-poster",
+    "category": "showroom",
+    "categoryLabel": "Showroom",
+    "title": "Krishna Battery Service — AMARON Batteries Only",
+    "caption": "Official shop services: Amaron Bike, Car & Inverter batteries, Car Jump Start, Battery Charging, Water Top-up & Two-Wheeler Oil.",
+    "src": "/assets/aistudio/WhatsApp_Image_2026-11-25_at_4.29.59_PM__1__89969cc2.jpeg",
+    "alt": "Krishna Battery Service promotional poster for Amaron batteries, jump start, charging, water top-up, and two-wheeler oil in Mugalivakkam",
+    "fit": "contain"
+  },
+  {
+    "id": "gallery-amaron-display-wall",
+    "category": "showroom",
+    "categoryLabel": "Showroom",
+    "title": "Illuminated Amaron Battery Display Wall",
+    "caption": "Automotive and inverter battery lineup showcased at our Mugalivakkam retail showroom.",
+    "src": "/assets/aistudio/WhatsApp_Image_2026-11-25_at_4.30.02_PM_cfa250ca.jpeg",
+    "alt": "Illuminated Amaron battery retail display wall showcasing automotive and inverter batteries",
+    "fit": "cover"
+  },
+  {
+    "id": "gallery-experience-center",
+    "category": "showroom",
+    "categoryLabel": "Showroom",
+    "title": "Amaron Experience Center & Counter",
+    "caption": "Dedicated automotive and motorcycle battery shelves with direct counter assistance.",
+    "src": "/assets/aistudio/WhatsApp_Image_2026-11-25_at_4.30.03_PM_545247eb.jpeg",
+    "alt": "Amaron Experience Center battery retail showroom featuring automotive and motorcycle display shelves",
+    "fit": "cover"
+  },
+  {
+    "id": "gallery-amaron-application-chart",
+    "category": "automotive",
+    "categoryLabel": "Automotive",
+    "title": "Amaron Vehicle Application Range Chart",
+    "caption": "Model-matched Amaron Pro, Flo, Go, Pro Rider, Fresh, Black, Hiway, and Harvest ranges.",
+    "src": "/assets/aistudio/WhatsApp_Image_2026-11-25_at_4.30.01_PM__2__efa6172b.jpeg",
+    "alt": "Amaron Application Chart showcasing car, two-wheeler, commercial, and tractor batteries",
+    "fit": "contain"
+  },
+  {
+    "id": "gallery-car-two-wheeler-batteries",
+    "category": "automotive",
+    "categoryLabel": "Automotive",
+    "title": "Car & Two-Wheeler Starter Batteries",
+    "caption": "12V automotive and compact two-wheeler starter batteries matched by terminal layout.",
+    "src": "/src/assets/images/car_two_wheeler_battery_1795588431694.jpg",
+    "alt": "Automotive car battery alongside compact two-wheeler battery",
+    "fit": "cover"
+  },
+  {
+    "id": "gallery-home-inverter-trolley",
+    "category": "home-inverter",
+    "categoryLabel": "Home Inverter",
+    "title": "Home Inverter & Tall Tubular Trolley Setup",
+    "caption": "Neat hallway inverter and deep-cycle tubular battery installation for everyday home backup.",
+    "src": "/src/assets/images/home_inverter_battery_1795588432641.jpg",
+    "alt": "Home inverter unit placed atop a ventilated trolley containing a tall tubular battery",
+    "fit": "cover"
+  },
+  {
+    "id": "gallery-dual-battery-backup",
+    "category": "home-inverter",
+    "categoryLabel": "Home Inverter",
+    "title": "Complete Dual-Battery Home Backup Solution",
+    "caption": "Wall-mounted inverter wired to dual backup batteries for extended household backup loads.",
+    "src": "/src/assets/images/inverter_backup_solutions_1795588434517.jpg",
+    "alt": "Neatly wired wall-mounted home inverter connected to dual backup batteries",
+    "fit": "cover"
+  },
+  {
+    "id": "gallery-voltage-testing-bay",
+    "category": "service",
+    "categoryLabel": "Testing & Setup",
+    "title": "Under-Hood Battery Voltage Testing",
+    "caption": "On-the-spot digital voltage and cranking health inspection before battery replacement.",
+    "src": "/src/assets/images/battery_testing_service_1795588434084.jpg",
+    "alt": "Technician testing an automobile battery voltage under the hood of a car",
+    "fit": "cover"
+  },
+  {
+    "id": "gallery-amaron-tubular-lineup",
+    "category": "showroom",
+    "categoryLabel": "Showroom",
+    "title": "Amaron Pro & Tall Tubular 150Ah Lineup",
+    "caption": "High-endurance automotive and home backup batteries stocked for Chennai homes and vehicles.",
+    "src": "/src/assets/images/hero_amaron_batteries_1795603793986.jpg",
+    "alt": "Amaron Pro automotive battery alongside Amaron Tall Tubular 150Ah inverter battery",
+    "fit": "cover"
+  },
+  {
+    "id": "gallery-automotive-inverter-pair",
+    "category": "home-inverter",
+    "categoryLabel": "Home Inverter",
+    "title": "Automotive & Tall Inverter Battery Pair",
+    "caption": "Heavy-duty starter and deep-cycle backup battery units ready for residential and vehicle fitment.",
+    "src": "/src/assets/images/hero_battery_showcase_1795588429117.jpg",
+    "alt": "Automotive starter battery alongside a tall home inverter backup battery",
+    "fit": "cover"
+  }
+]

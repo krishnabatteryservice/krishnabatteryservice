@@ -58,6 +58,11 @@ export function Footer() {
                 </a>
               </li>
               <li>
+                <a href="#gallery" className="hover:text-amber-400 transition-colors">
+                  Media Gallery
+                </a>
+              </li>
+              <li>
                 <a href="#social" className="hover:text-amber-400 transition-colors">
                   Social Media &amp; Reels
                 </a>

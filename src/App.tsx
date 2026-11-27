@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {Header} from './components/Header';
 import {HeroSection} from './components/HeroSection';
 import {AboutSection} from './components/AboutSection';
-import {WhyChooseUsSection} from './components/WhyChooseUsSection';
+import {MediaGallerySection} from './components/MediaGallerySection';
 import {SocialMediaReelsSection} from './components/SocialMediaReelsSection';
 import {ContactSection} from './components/ContactSection';
 import {Footer} from './components/Footer';
@@ -45,7 +45,7 @@ export default function App() {
       <main className="flex-1">
         <HeroSection />
         <AboutSection />
-        <WhyChooseUsSection />
+        <MediaGallerySection />
         <SocialMediaReelsSection />
         <ContactSection />
       </main>
