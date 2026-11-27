@@ -5,7 +5,6 @@ import {BUSINESS_INFO} from '../data/businessConfig';
 const NAV_LINKS = [
   {label: 'About', href: '#about'},
   {label: 'Batteries', href: '#batteries'},
-  {label: 'Products', href: '#products'},
   {label: 'FAQ', href: '#faq'},
   {label: 'Contact', href: '#contact'},
 ] as const;

@@ -60,7 +60,7 @@ export function HeroSection() {
 
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-300">
               <a
-                href="#products"
+                href="#batteries"
                 className="inline-flex items-center gap-1.5 text-slate-200 hover:text-amber-400 transition-colors font-medium"
               >
                 <span>Browse Battery Categories</span>

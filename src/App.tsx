@@ -3,7 +3,6 @@ import {Header} from './components/Header';
 import {HeroSection} from './components/HeroSection';
 import {AboutSection} from './components/AboutSection';
 import {BatteryCategoriesSection} from './components/BatteryCategoriesSection';
-import {ProductsServicesSection} from './components/ProductsServicesSection';
 import {WhyChooseUsSection} from './components/WhyChooseUsSection';
 import {FaqSection} from './components/FaqSection';
 import {ContactSection} from './components/ContactSection';
@@ -65,9 +64,6 @@ export default function App() {
         <HeroSection />
         <AboutSection />
         <BatteryCategoriesSection
-          onSelectEnquiryCategory={handleSelectEnquiryCategory}
-        />
-        <ProductsServicesSection
           onSelectEnquiryCategory={handleSelectEnquiryCategory}
         />
         <WhyChooseUsSection />

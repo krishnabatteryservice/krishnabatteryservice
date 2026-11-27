@@ -82,11 +82,6 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#products" className="hover:text-amber-400 transition-colors">
-                  Products &amp; Services
-                </a>
-              </li>
-              <li>
                 <a href="#faq" className="hover:text-amber-400 transition-colors">
                   Frequently Asked Questions
                 </a>
