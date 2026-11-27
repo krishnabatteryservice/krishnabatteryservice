@@ -1,3 +1,5 @@
+import productsData from './products.json';
+
 export type CatalogCategory =
   | 'car-battery'
   | 'two-wheeler-battery'
@@ -80,112 +82,7 @@ export const BUSINESS_INFO = {
   ],
 } as const;
 
-export const CATALOG_ITEMS: CatalogItem[] = [
-  {
-    id: 'car-battery-hatchback-sedan',
-    category: 'car-battery',
-    categoryLabel: 'Car Battery',
-    title: 'Car Starter Battery — Hatchback & Sedan',
-    summary:
-      'Model-matched 12V starter batteries for petrol and diesel hatchbacks and sedans with terminal layout verification at our Mugalivakkam counter.',
-    specPlaceholder: '[Editable: e.g. 35Ah – 45Ah · 12V · JIS / DIN Range]',
-    brandSlot: 'Amaron (Editable: Add other stocked brands)',
-    pricePlaceholder: 'Price on Enquiry — [Editable Price]',
-    warrantyPlaceholder: '[Editable: Manufacturer Warranty Terms]',
-    image: IMAGES.carTwoWheeler,
-    imageAlt:
-      'Automotive car starter battery for hatchback and sedan vehicles',
-    whatsappPrompt:
-      'Hello Krishna Battery Service, I am looking for a Hatchback / Sedan Car Battery. Please share available models and pricing.',
-  },
-  {
-    id: 'car-battery-suv-diesel',
-    category: 'car-battery',
-    categoryLabel: 'SUV / Commercial Battery',
-    title: 'Heavy-Duty Car & SUV Battery',
-    summary:
-      'Higher cranking-power automotive batteries suited for SUVs, MUVs, diesel engines, and commercial vehicles.',
-    specPlaceholder: '[Editable: e.g. 60Ah – 80Ah · 12V · High-Crank]',
-    brandSlot: 'Amaron (Editable: Add other stocked brands)',
-    pricePlaceholder: 'Price on Enquiry — [Editable Price]',
-    warrantyPlaceholder: '[Editable: Manufacturer Warranty Terms]',
-    image:
-      '/assets/aistudio/WhatsApp_Image_2026-11-25_at_4.30.01_PM__2__efa6172b.jpeg',
-    imageAlt:
-      'Amaron automotive and heavy-duty SUV battery range chart',
-    whatsappPrompt:
-      'Hello Krishna Battery Service, I am looking for an SUV / Heavy-Duty Car Battery. Please share compatible models and pricing.',
-  },
-  {
-    id: 'two-wheeler-battery',
-    category: 'two-wheeler-battery',
-    categoryLabel: 'Two-Wheeler Battery',
-    title: 'Two-Wheeler Battery — Scooter & Motorcycle',
-    summary:
-      'Compact 12V starter batteries matched to popular scooters and motorcycles for dependable electric start.',
-    specPlaceholder: '[Editable: e.g. 4Ah – 9Ah · 12V VRLA / AGM]',
-    brandSlot: 'Amaron (Editable: Add other stocked brands)',
-    pricePlaceholder: 'Price on Enquiry — [Editable Price]',
-    warrantyPlaceholder: '[Editable: Manufacturer Warranty Terms]',
-    image:
-      '/assets/aistudio/WhatsApp_Image_2026-11-25_at_4.30.03_PM_545247eb.jpeg',
-    imageAlt:
-      'Two-wheeler motorcycle and scooter batteries displayed in showroom',
-    whatsappPrompt:
-      'Hello Krishna Battery Service, I am looking for a Two-Wheeler Scooter / Motorcycle Battery. Please share available options and pricing.',
-  },
-  {
-    id: 'tall-tubular-inverter-battery',
-    category: 'home-inverter',
-    categoryLabel: 'Tall Tubular Inverter Battery',
-    title: 'Tall Tubular Home Inverter Battery',
-    summary:
-      'Deep-cycle tall tubular backup battery built for steady household backup of lights, fans, and Wi-Fi during Chennai power cuts.',
-    specPlaceholder: '[Editable: e.g. 150Ah / 180Ah / 200Ah · 12V Tall Tubular]',
-    brandSlot: '[Editable: Add Stocked Inverter Battery Brand]',
-    pricePlaceholder: 'Price on Enquiry — [Editable Price]',
-    warrantyPlaceholder: '[Editable: Manufacturer Warranty Terms]',
-    image: IMAGES.homeInverter,
-    imageAlt:
-      'Home inverter and tall tubular battery neatly housed in a ventilated trolley inside a modern hallway',
-    whatsappPrompt:
-      'Hello Krishna Battery Service, I am looking for a Tall Tubular Home Inverter Battery. Please share available models and pricing.',
-  },
-  {
-    id: 'flat-plate-inverter-battery',
-    category: 'home-inverter',
-    categoryLabel: 'Flat-Plate Inverter Battery',
-    title: 'Compact Flat-Plate Inverter Battery',
-    summary:
-      'Space-saving inverter battery option suited for apartments, compact utility corners, and everyday backup requirements.',
-    specPlaceholder: '[Editable: e.g. 100Ah – 150Ah · 12V Flat-Plate]',
-    brandSlot: '[Editable: Add Stocked Flat-Plate Battery Brand]',
-    pricePlaceholder: 'Price on Enquiry — [Editable Price]',
-    warrantyPlaceholder: '[Editable: Manufacturer Warranty Terms]',
-    image: IMAGES.heroShowcase,
-    imageAlt:
-      'Home backup battery lineup for apartments and residential inverter units',
-    whatsappPrompt:
-      'Hello Krishna Battery Service, I am looking for a Compact Flat-Plate Home Inverter Battery. Please share available models and pricing.',
-  },
-  {
-    id: 'inverter-battery-combo',
-    category: 'solutions-services',
-    categoryLabel: 'Inverter & Battery Combo',
-    title: 'Complete Home Inverter & Battery Combo',
-    summary:
-      'Matched inverter unit and backup battery paired to your household load, plus in-store battery voltage testing and fitment guidance.',
-    specPlaceholder: '[Editable: e.g. 900VA – 1500VA Inverter + 150Ah Battery]',
-    brandSlot: '[Editable: Add Stocked Inverter & Battery Combo Brands]',
-    pricePlaceholder: 'Price on Enquiry — [Editable Combo Price]',
-    warrantyPlaceholder: '[Editable: Manufacturer Warranty Terms]',
-    image: IMAGES.backupSolutions,
-    imageAlt:
-      'Neatly wired wall-mounted home inverter connected to dual backup batteries with heavy-duty cables',
-    whatsappPrompt:
-      'Hello Krishna Battery Service, I want guidance on a Complete Home Inverter & Battery Combo.',
-  },
-];
+export const CATALOG_ITEMS: CatalogItem[] = productsData as CatalogItem[];
 
 export const WHY_CHOOSE_POINTS: WhyChoosePoint[] = [
   {

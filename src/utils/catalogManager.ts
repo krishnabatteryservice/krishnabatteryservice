@@ -380,3 +380,180 @@ export function isManageModeFromSearch(search: string): boolean {
   const edit = params.get('edit');
   return manage === '1' || manage === 'true' || edit === '1' || edit === 'true';
 }
+
+export interface ImportedCatalogResult {
+  valid: boolean;
+  items: CatalogItem[];
+  error?: string;
+}
+
+/**
+ * Formats the battery catalog array as clean, readable JSON ready for src/data/products.json.
+ */
+export function formatCatalogJson(items: readonly CatalogItem[]): string {
+  return `${JSON.stringify(items, null, 2)}\n`;
+}
+
+/**
+ * Checks whether any battery listing uses an inline base64 data:image URI.
+ */
+export function hasEmbeddedDataImages(items: readonly CatalogItem[]): boolean {
+  return items.some((item) => item.image.trim().startsWith('data:image/'));
+}
+
+/**
+ * Produces a path-safe slug for catalog image files saved to public/assets/catalog.
+ */
+export function sanitizeCatalogImageFilename(id: string): string {
+  const cleaned = id
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 48);
+  return cleaned || 'battery';
+}
+
+/**
+ * Strictly parses and validates an imported products.json string without silent fallback.
+ */
+export function parseImportedCatalogJson(
+  raw: string,
+  fallbackImage: string,
+): ImportedCatalogResult {
+  if (!raw || !raw.trim()) {
+    return {
+      valid: false,
+      items: [],
+      error: 'The selected file is empty.',
+    };
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return {
+      valid: false,
+      items: [],
+      error: 'Invalid JSON syntax. Please select a valid products.json file.',
+    };
+  }
+
+  if (!Array.isArray(parsed)) {
+    return {
+      valid: false,
+      items: [],
+      error: 'products.json must contain a JSON array of battery items.',
+    };
+  }
+
+  if (parsed.length > 200) {
+    return {
+      valid: false,
+      items: [],
+      error: 'Catalog cannot exceed 200 battery listings.',
+    };
+  }
+
+  const normalizedItems: CatalogItem[] = [];
+
+  for (let i = 0; i < parsed.length; i += 1) {
+    const entry = parsed[i];
+    if (typeof entry !== 'object' || entry === null) {
+      return {
+        valid: false,
+        items: [],
+        error: `Entry #${i + 1} is not a valid battery object.`,
+      };
+    }
+
+    const record = entry as Record<string, unknown>;
+    const rawTitle = typeof record.title === 'string' ? record.title.trim() : '';
+    if (rawTitle.length < 2) {
+      return {
+        valid: false,
+        items: [],
+        error: `Entry #${i + 1} is missing a valid battery title.`,
+      };
+    }
+
+    const rawLabel =
+      typeof record.categoryLabel === 'string' ? record.categoryLabel.trim() : '';
+    const normalizedCategory = normalizeStoredCategory(
+      record.category,
+      rawLabel,
+      rawTitle,
+    );
+    if (!normalizedCategory) {
+      return {
+        valid: false,
+        items: [],
+        error: `Entry #${i + 1} ("${rawTitle}") has an unsupported category.`,
+      };
+    }
+
+    const id =
+      typeof record.id === 'string' && record.id.trim().length > 0
+        ? record.id.trim()
+        : generateBatteryItemId(rawTitle, 1700000000000 + i);
+    const categoryLabel = rawLabel || CATEGORY_DEFAULT_LABELS[normalizedCategory];
+    const brandSlot =
+      typeof record.brandSlot === 'string' && record.brandSlot.trim()
+        ? record.brandSlot.trim()
+        : 'Confirm Brand at Store';
+    const specPlaceholder =
+      typeof record.specPlaceholder === 'string' && record.specPlaceholder.trim()
+        ? record.specPlaceholder.trim()
+        : 'Confirm Specs at Store';
+    const pricePlaceholder =
+      typeof record.pricePlaceholder === 'string' && record.pricePlaceholder.trim()
+        ? record.pricePlaceholder.trim()
+        : 'Price on Enquiry';
+    const warrantyPlaceholder =
+      typeof record.warrantyPlaceholder === 'string' &&
+      record.warrantyPlaceholder.trim()
+        ? record.warrantyPlaceholder.trim()
+        : 'Confirm Warranty at Store';
+    const summary =
+      typeof record.summary === 'string' && record.summary.trim()
+        ? record.summary.trim()
+        : `${categoryLabel} available at Krishna Battery Service, Mugalivakkam.`;
+    const image =
+      typeof record.image === 'string' && record.image.trim()
+        ? record.image.trim()
+        : fallbackImage;
+    const imageAlt =
+      typeof record.imageAlt === 'string' && record.imageAlt.trim()
+        ? record.imageAlt.trim()
+        : `${rawTitle} — ${categoryLabel}`;
+    const whatsappPrompt =
+      typeof record.whatsappPrompt === 'string' && record.whatsappPrompt.trim()
+        ? record.whatsappPrompt.trim()
+        : buildProductWhatsAppPrompt({
+            title: rawTitle,
+            brandSlot,
+            specPlaceholder,
+          });
+
+    normalizedItems.push({
+      id,
+      category: normalizedCategory,
+      categoryLabel,
+      title: rawTitle,
+      summary,
+      specPlaceholder,
+      brandSlot,
+      pricePlaceholder,
+      warrantyPlaceholder,
+      image,
+      imageAlt,
+      whatsappPrompt,
+    });
+  }
+
+  return {
+    valid: true,
+    items: normalizedItems,
+  };
+}
+

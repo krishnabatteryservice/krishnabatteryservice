@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useRef, useState} from 'react';
+import {useMemo, useRef, useState} from 'react';
 import {
   ArrowRight,
   MessageCircle,
@@ -7,6 +7,7 @@ import {
   RotateCcw,
   Search,
   Trash2,
+  UploadCloud,
   X,
 } from 'lucide-react';
 import {
@@ -36,6 +37,7 @@ import {
   type PresetBatteryImage,
 } from '../utils/catalogManager';
 import {BatteryProductEditor} from './BatteryProductEditor';
+import {CatalogPublishPanel} from './CatalogPublishPanel';
 import {ResilientImage} from './ResilientImage';
 
 interface ProductsServicesSectionProps {
@@ -97,30 +99,45 @@ function loadInitialCatalog(): CatalogItem[] {
   }
 }
 
+function saveDraftToBrowser(nextItems: CatalogItem[]) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(nextItems));
+  } catch {
+    // Ignore storage quota errors gracefully
+  }
+}
+
+function clearBrowserDraft() {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.removeItem(CATALOG_STORAGE_KEY);
+  } catch {
+    // Ignore storage access errors gracefully
+  }
+}
+
 export function ProductsServicesSection({
   onSelectEnquiryCategory,
 }: ProductsServicesSectionProps) {
+  const [publishedItems, setPublishedItems] = useState<CatalogItem[]>(() => [
+    ...CATALOG_ITEMS,
+  ]);
   const [items, setItems] = useState<CatalogItem[]>(loadInitialCatalog);
   const [activeFilter, setActiveFilter] = useState<CatalogFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [editorMode, setEditorMode] = useState<'add' | 'edit' | null>(null);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [showPublishPanel, setShowPublishPanel] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [confirmReset, setConfirmReset] = useState(false);
   const [statusNotice, setStatusNotice] = useState<string>('');
   const editorAnchorRef = useRef<HTMLDivElement | null>(null);
+  const publishAnchorRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    try {
-      window.localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(items));
-    } catch {
-      // Ignore storage quota errors gracefully
-    }
-  }, [items]);
-
-  const isCustomized = useMemo(() => {
-    return JSON.stringify(items) !== JSON.stringify(CATALOG_ITEMS);
-  }, [items]);
+  const hasUnsavedChanges = useMemo(() => {
+    return JSON.stringify(items) !== JSON.stringify(publishedItems);
+  }, [items, publishedItems]);
 
   const countsByFilter = useMemo(() => {
     return {
@@ -186,6 +203,23 @@ export function ProductsServicesSection({
     setEditingItemId(null);
   }
 
+  function togglePublishPanel() {
+    setConfirmDeleteId(null);
+    setConfirmReset(false);
+    setShowPublishPanel((prev) => {
+      const next = !prev;
+      if (next) {
+        setTimeout(() => {
+          publishAnchorRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+          });
+        }, 30);
+      }
+      return next;
+    });
+  }
+
   function handleSaveDraft(draft: BatteryProductDraft) {
     if (editorMode === 'add') {
       const id = generateBatteryItemId(draft.title);
@@ -194,12 +228,18 @@ export function ProductsServicesSection({
         id,
         IMAGES.carTwoWheeler,
       );
-      setItems((prev) => addBatteryItem(prev, newItem));
+      setItems((prev) => {
+        const next = addBatteryItem(prev, newItem);
+        saveDraftToBrowser(next);
+        return next;
+      });
       if (activeFilter !== 'all' && activeFilter !== newItem.category) {
         setActiveFilter('all');
       }
       setSearchQuery('');
-      setStatusNotice(`Added "${newItem.title}" to the battery listing.`);
+      setStatusNotice(
+        `Added "${newItem.title}". Click "Publish to GitHub" when ready to save it into src/data/products.json.`,
+      );
       closeEditor();
       return;
     }
@@ -210,29 +250,67 @@ export function ProductsServicesSection({
         editingItemId,
         IMAGES.carTwoWheeler,
       );
-      setItems((prev) => updateBatteryItem(prev, editingItemId, updated));
-      setStatusNotice(`Saved changes to "${updated.title}".`);
+      setItems((prev) => {
+        const next = updateBatteryItem(prev, editingItemId, updated);
+        saveDraftToBrowser(next);
+        return next;
+      });
+      setStatusNotice(
+        `Updated "${updated.title}". Click "Publish to GitHub" when ready to save it into src/data/products.json.`,
+      );
       closeEditor();
     }
   }
 
   function handleConfirmDelete(item: CatalogItem) {
-    setItems((prev) => removeBatteryItem(prev, item.id));
+    setItems((prev) => {
+      const next = removeBatteryItem(prev, item.id);
+      saveDraftToBrowser(next);
+      return next;
+    });
     if (editingItemId === item.id) {
       closeEditor();
     }
     setConfirmDeleteId(null);
-    setStatusNotice(`Removed "${item.title}" from the battery listing.`);
+    setStatusNotice(
+      `Removed "${item.title}". Click "Publish to GitHub" to save this change into src/data/products.json.`,
+    );
   }
 
   function handleResetDefaults() {
-    setItems([...CATALOG_ITEMS]);
+    clearBrowserDraft();
+    setItems([...publishedItems]);
     setActiveFilter('all');
     setSearchQuery('');
     setConfirmReset(false);
     setConfirmDeleteId(null);
     closeEditor();
-    setStatusNotice('Restored default battery listings.');
+    setStatusNotice('Discarded unsaved browser edits and restored saved catalog.');
+  }
+
+  function handleSavedToProject(
+    savedItems: CatalogItem[],
+    savedImagesCount: number,
+  ) {
+    clearBrowserDraft();
+    setPublishedItems(savedItems);
+    setItems(savedItems);
+    setStatusNotice(
+      savedImagesCount > 0
+        ? `Saved ${savedItems.length} batteries and ${savedImagesCount} uploaded photo(s) to project files — ready to push to GitHub.`
+        : `Saved ${savedItems.length} batteries to src/data/products.json — ready to push to GitHub.`,
+    );
+  }
+
+  function handleImportCatalog(importedItems: CatalogItem[]) {
+    setItems(importedItems);
+    saveDraftToBrowser(importedItems);
+    setActiveFilter('all');
+    setSearchQuery('');
+    closeEditor();
+    setStatusNotice(
+      `Imported ${importedItems.length} batteries from products.json. Click "Save to Project for GitHub" to persist to repo files.`,
+    );
   }
 
   return (
@@ -241,7 +319,7 @@ export function ProductsServicesSection({
       className="py-16 lg:py-24 bg-white border-b border-slate-200 scroll-mt-16"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section header + Add / Reset actions */}
+        {/* Section header + Publish / Add / Reset actions */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8">
           <div className="max-w-2xl">
             <p className="text-sm font-semibold text-amber-700 mb-3">
@@ -254,26 +332,29 @@ export function ProductsServicesSection({
               Browse multiple car, two-wheeler, and home inverter batteries. Use{' '}
               <span className="font-semibold text-navy-900">Add Battery</span>{' '}
               or <span className="font-semibold text-navy-900">Edit</span> on
-              any card to customize models, brands, specifications, pricing, and
-              photos directly in this section.
+              any card to customize listings, then click{' '}
+              <span className="font-semibold text-navy-900">
+                Publish to GitHub
+              </span>{' '}
+              to save your changes into the project files.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 self-start lg:self-end shrink-0">
-            {isCustomized && !confirmReset && (
+            {hasUnsavedChanges && !confirmReset && (
               <button
                 type="button"
                 onClick={() => setConfirmReset(true)}
                 className="inline-flex items-center gap-1.5 px-3.5 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 hover:border-navy-900 hover:text-navy-900 rounded-lg transition-colors whitespace-nowrap"
               >
                 <RotateCcw className="w-4 h-4" aria-hidden="true" />
-                <span>Reset Defaults</span>
+                <span>Discard Edits</span>
               </button>
             )}
 
-            {isCustomized && confirmReset && (
+            {hasUnsavedChanges && confirmReset && (
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-amber-300 bg-amber-50 text-xs font-medium text-navy-900">
-                <span>Restore defaults?</span>
+                <span>Discard unsaved edits?</span>
                 <button
                   type="button"
                   onClick={handleResetDefaults}
@@ -290,6 +371,22 @@ export function ProductsServicesSection({
                 </button>
               </div>
             )}
+
+            <button
+              type="button"
+              onClick={togglePublishPanel}
+              aria-expanded={showPublishPanel}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg transition-colors whitespace-nowrap shrink-0 border ${
+                hasUnsavedChanges || showPublishPanel
+                  ? 'bg-navy-900 text-white border-navy-900 hover:bg-navy-800'
+                  : 'bg-white text-navy-900 border-slate-300 hover:border-navy-900'
+              }`}
+            >
+              <UploadCloud className="w-4 h-4" aria-hidden="true" />
+              <span>
+                {hasUnsavedChanges ? 'Publish Edits to GitHub' : 'Publish to GitHub'}
+              </span>
+            </button>
 
             <button
               type="button"
@@ -384,6 +481,20 @@ export function ProductsServicesSection({
             </button>
           </div>
         )}
+
+        {/* GitHub Publish / Export Panel */}
+        <div ref={publishAnchorRef} className="scroll-mt-24">
+          {showPublishPanel && (
+            <CatalogPublishPanel
+              items={items}
+              hasUnsavedChanges={hasUnsavedChanges}
+              fallbackImage={IMAGES.carTwoWheeler}
+              onSavedToProject={handleSavedToProject}
+              onImportItems={handleImportCatalog}
+              onClose={() => setShowPublishPanel(false)}
+            />
+          )}
+        </div>
 
         {/* Inline Add / Edit Battery Editor */}
         <div ref={editorAnchorRef} className="scroll-mt-24">

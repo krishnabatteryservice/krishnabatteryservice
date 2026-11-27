@@ -6,12 +6,16 @@ import {
   buildBatteryItemFromDraft,
   createEmptyBatteryDraft,
   filterAndSearchBatteries,
+  formatCatalogJson,
   generateBatteryItemId,
+  hasEmbeddedDataImages,
   isManageModeFromSearch,
   itemToBatteryDraft,
   mapCatalogItemToEnquiryCategory,
+  parseImportedCatalogJson,
   parseStoredCatalog,
   removeBatteryItem,
+  sanitizeCatalogImageFilename,
   updateBatteryItem,
   validateBatteryDraft,
 } from './catalogManager';
@@ -174,4 +178,55 @@ test('isManageModeFromSearch stays disabled for public URLs and enables for mana
   assert.equal(isManageModeFromSearch('?manage=1'), true);
   assert.equal(isManageModeFromSearch('?manage=true'), true);
   assert.equal(isManageModeFromSearch('?edit=1'), true);
+});
+
+test('formatCatalogJson and parseImportedCatalogJson round-trip cleanly and reject invalid files', () => {
+  const exported = formatCatalogJson(CATALOG_ITEMS);
+  assert.ok(exported.endsWith('\n'));
+
+  const imported = parseImportedCatalogJson(exported, IMAGES.carTwoWheeler);
+  assert.equal(imported.valid, true);
+  assert.equal(imported.items.length, CATALOG_ITEMS.length);
+  assert.equal(imported.items[0].id, CATALOG_ITEMS[0].id);
+
+  const invalidJson = parseImportedCatalogJson('{bad-json', IMAGES.carTwoWheeler);
+  assert.equal(invalidJson.valid, false);
+  assert.ok(invalidJson.error);
+
+  const notArray = parseImportedCatalogJson('{"items":[]}', IMAGES.carTwoWheeler);
+  assert.equal(notArray.valid, false);
+  assert.ok(notArray.error);
+
+  const missingTitle = parseImportedCatalogJson(
+    JSON.stringify([{id: 'x', category: 'car-battery', title: ''}]),
+    IMAGES.carTwoWheeler,
+  );
+  assert.equal(missingTitle.valid, false);
+  assert.match(missingTitle.error ?? '', /title/i);
+
+  const badCategory = parseImportedCatalogJson(
+    JSON.stringify([{id: 'x', category: 'invalid-cat', title: 'Test Battery'}]),
+    IMAGES.carTwoWheeler,
+  );
+  assert.equal(badCategory.valid, false);
+  assert.match(badCategory.error ?? '', /category/i);
+});
+
+test('sanitizeCatalogImageFilename and hasEmbeddedDataImages work reliably', () => {
+  assert.equal(
+    sanitizeCatalogImageFilename('../../Amaron Flo 42B20L!.png'),
+    'amaron-flo-42b20l-png',
+  );
+  assert.equal(sanitizeCatalogImageFilename('///'), 'battery');
+
+  assert.equal(hasEmbeddedDataImages(CATALOG_ITEMS), false);
+  assert.equal(
+    hasEmbeddedDataImages([
+      {
+        ...CATALOG_ITEMS[0],
+        image: 'data:image/png;base64,iVBORw0KGgo=',
+      },
+    ]),
+    true,
+  );
 });
