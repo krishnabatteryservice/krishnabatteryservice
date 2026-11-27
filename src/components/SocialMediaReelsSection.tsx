@@ -78,27 +78,36 @@ const PRESET_REEL_COVERS = [
 
 const PLATFORM_ACCENT_STYLES: Record<
   SocialPlatform,
-  {iconBg: string; iconText: string; hoverBorder: string}
+  {
+    iconBg: string;
+    iconText: string;
+    cardHover: string;
+    glowTint: string;
+  }
 > = {
   instagram: {
-    iconBg: 'bg-rose-50',
-    iconText: 'text-rose-700',
-    hoverBorder: 'hover:border-rose-300',
+    iconBg: 'bg-gradient-to-br from-rose-500 via-pink-600 to-amber-500',
+    iconText: 'text-white',
+    cardHover: 'hover:border-rose-400/50',
+    glowTint: 'group-hover:text-rose-300',
   },
   facebook: {
-    iconBg: 'bg-blue-50',
-    iconText: 'text-blue-700',
-    hoverBorder: 'hover:border-blue-300',
+    iconBg: 'bg-blue-600',
+    iconText: 'text-white',
+    cardHover: 'hover:border-blue-400/50',
+    glowTint: 'group-hover:text-blue-300',
   },
   youtube: {
-    iconBg: 'bg-red-50',
-    iconText: 'text-red-700',
-    hoverBorder: 'hover:border-red-300',
+    iconBg: 'bg-red-600',
+    iconText: 'text-white',
+    cardHover: 'hover:border-red-400/50',
+    glowTint: 'group-hover:text-red-300',
   },
   'google-business': {
-    iconBg: 'bg-emerald-50',
-    iconText: 'text-emerald-700',
-    hoverBorder: 'hover:border-emerald-300',
+    iconBg: 'bg-emerald-600',
+    iconText: 'text-white',
+    cardHover: 'hover:border-emerald-400/50',
+    glowTint: 'group-hover:text-emerald-300',
   },
 };
 
@@ -457,19 +466,25 @@ export function SocialMediaReelsSection() {
   return (
     <section
       id="social"
-      className="py-16 lg:py-24 bg-white border-b border-slate-200 scroll-mt-16"
+      className="relative py-20 lg:py-28 bg-navy-950 text-white border-b border-navy-800 scroll-mt-16 overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Subtle architectural ambient gradient */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(245,158,11,0.10),transparent_65%)]"
+      />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
           <div className="max-w-2xl">
-            <p className="text-sm font-semibold text-amber-700 mb-3">
+            <p className="text-sm font-semibold text-amber-400 tracking-wide mb-3">
               Social Media &amp; Reels
             </p>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-navy-900 mb-3">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.65rem] font-bold tracking-tight text-white leading-[1.12] text-balance mb-4">
               Follow Krishna Battery Service &amp; Watch Our Latest Reels
             </h2>
-            <p className="text-base text-slate-600 leading-relaxed">
+            <p className="text-base text-slate-300 leading-relaxed">
               Connect with our Mugalivakkam battery showroom on Instagram,
               Facebook, YouTube, and Google Business for quick battery care
               reels, vehicle fitment clips, and store updates.
@@ -488,10 +503,10 @@ export function SocialMediaReelsSection() {
                   }
                 }}
                 aria-expanded={manageOpen}
-                className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg border transition-colors whitespace-nowrap ${
+                className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl border transition-colors whitespace-nowrap ${
                   manageOpen || hasUnsavedChanges
-                    ? 'bg-navy-900 text-white border-navy-900 hover:bg-navy-800'
-                    : 'bg-white text-navy-900 border-slate-300 hover:border-navy-900'
+                    ? 'bg-white text-navy-950 border-white hover:bg-slate-100'
+                    : 'bg-navy-900 text-white border-white/20 hover:border-amber-400/60'
                 }`}
               >
                 <Settings2 className="w-4 h-4" aria-hidden="true" />
@@ -503,7 +518,7 @@ export function SocialMediaReelsSection() {
               <button
                 type="button"
                 onClick={() => openAddReelManager()}
-                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-navy-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors whitespace-nowrap"
+                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-navy-950 bg-amber-400 hover:bg-amber-300 rounded-xl transition-colors whitespace-nowrap"
               >
                 <Plus className="w-4 h-4" aria-hidden="true" />
                 <span>Add Reel</span>
@@ -516,14 +531,14 @@ export function SocialMediaReelsSection() {
         {isOwnerMode && statusNotice && (
           <div
             role="status"
-            className="mb-8 flex items-center justify-between gap-3 px-4 py-3 rounded-lg bg-emerald-50 border border-emerald-200 text-sm text-emerald-900"
+            className="mb-8 flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-sm text-emerald-100"
           >
             <p className="font-medium">{statusNotice}</p>
             <button
               type="button"
               onClick={() => setStatusNotice('')}
               aria-label="Dismiss status notice"
-              className="p-1 text-emerald-700 hover:text-emerald-950"
+              className="p-1 text-emerald-300 hover:text-white"
             >
               <X className="w-4 h-4" aria-hidden="true" />
             </button>
@@ -535,7 +550,7 @@ export function SocialMediaReelsSection() {
           {isOwnerMode && manageOpen && (
             <div
               data-testid="social-manager-panel"
-              className="mb-10 rounded-xl border border-navy-900/20 bg-slate-50 p-5 sm:p-6 shadow-sm"
+              className="mb-12 rounded-2xl border border-white/15 bg-slate-50 text-slate-900 p-5 sm:p-6 shadow-xl"
             >
               <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-5 border-b border-slate-200">
                 <div className="inline-flex items-center gap-1 p-1 bg-white rounded-lg border border-slate-200">
@@ -987,48 +1002,55 @@ export function SocialMediaReelsSection() {
           )}
         </div>
 
-        {/* 4 Official Social Media Account Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        {/* 4 Official Social Media Channel Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-16">
           {socialData.profiles.map((profile) => {
             const accent = PLATFORM_ACCENT_STYLES[profile.platform];
             const safeProfileUrl = normalizeSocialUrl(profile.url);
             return (
               <div
                 key={profile.platform}
-                className={`flex flex-col rounded-xl bg-slate-50 border border-slate-200 p-5 transition-colors ${accent.hoverBorder}`}
+                className={`group relative flex flex-col rounded-2xl bg-navy-900/85 border border-white/10 p-6 transition-all duration-200 hover:-translate-y-1 hover:bg-navy-900 ${accent.cardHover}`}
               >
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-3 min-w-0">
+                <div className="flex items-center justify-between gap-3 mb-5">
+                  <span
+                    className={`w-11 h-11 rounded-xl inline-flex items-center justify-center shrink-0 shadow-sm ${accent.iconBg} ${accent.iconText}`}
+                  >
+                    <SocialPlatformIcon
+                      platform={profile.platform}
+                      className="w-5 h-5"
+                    />
+                  </span>
+                  {safeProfileUrl && (
                     <span
-                      className={`w-10 h-10 rounded-lg inline-flex items-center justify-center shrink-0 ${accent.iconBg} ${accent.iconText}`}
+                      aria-hidden="true"
+                      className={`w-8 h-8 rounded-full border border-white/10 bg-white/5 inline-flex items-center justify-center text-slate-300 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:border-white/25 ${accent.glowTint}`}
                     >
-                      <SocialPlatformIcon
-                        platform={profile.platform}
-                        className="w-5 h-5"
-                      />
+                      <ArrowUpRight className="w-4 h-4" />
                     </span>
-                    <div className="min-w-0">
-                      <h3 className="font-display text-base font-bold text-navy-900 leading-tight">
-                        {profile.name}
-                      </h3>
-                      <p className="text-xs font-mono text-slate-600 truncate mt-0.5">
-                        {profile.handle}
-                      </p>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
+                <div className="mb-3 min-w-0">
+                  <h3 className="font-display text-lg font-bold text-white leading-tight tracking-tight">
+                    {profile.name}
+                  </h3>
+                  <p className="text-xs font-mono text-slate-400 truncate mt-1">
+                    {profile.handle}
+                  </p>
+                </div>
+
+                <p className="text-sm text-slate-300 leading-relaxed mb-6">
                   {profile.description}
                 </p>
 
-                <div className="mt-auto pt-3 border-t border-slate-200">
+                <div className="mt-auto pt-4 border-t border-white/10">
                   {safeProfileUrl ? (
                     <a
                       href={safeProfileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-semibold text-navy-900 hover:text-amber-700 transition-colors"
+                      className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-semibold text-amber-300 group-hover:text-amber-200 transition-colors after:absolute after:inset-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:rounded-md"
                     >
                       <span>
                         {profile.platform === 'google-business'
@@ -1036,7 +1058,7 @@ export function SocialMediaReelsSection() {
                           : `Follow on ${profile.name}`}
                       </span>
                       <ArrowUpRight
-                        className="w-4 h-4 shrink-0"
+                        className="w-4 h-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                         aria-hidden="true"
                       />
                     </a>
@@ -1044,13 +1066,13 @@ export function SocialMediaReelsSection() {
                     <button
                       type="button"
                       onClick={openProfilesManager}
-                      className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-semibold text-amber-700 hover:text-navy-900 transition-colors"
+                      className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-semibold text-amber-400 hover:text-amber-300 transition-colors"
                     >
                       <span>Connect {profile.name} URL</span>
                       <Link2 className="w-4 h-4 shrink-0" aria-hidden="true" />
                     </button>
                   ) : (
-                    <span className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-medium text-slate-500">
+                    <span className="inline-flex items-center justify-between w-full text-xs sm:text-sm font-medium text-slate-400">
                       <span>Official {profile.name} Channel</span>
                     </span>
                   )}
@@ -1060,19 +1082,24 @@ export function SocialMediaReelsSection() {
           })}
         </div>
 
-        {/* Reels & Shorts Feed Header + Filter Tabs */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 mb-6 border-b border-slate-200">
-          <div className="flex items-center gap-2.5">
-            <Film className="w-5 h-5 text-amber-700 shrink-0" aria-hidden="true" />
-            <h3 className="font-display text-xl sm:text-2xl font-bold text-navy-900">
-              Showroom Reels &amp; Short Videos
-            </h3>
+        {/* Reels & Shorts Feed Header + Modern Segmented Filter Tabs */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 pb-6 mb-8 border-b border-white/10">
+          <div>
+            <div className="flex items-center gap-2.5 mb-1.5">
+              <Film className="w-5 h-5 text-amber-400 shrink-0" aria-hidden="true" />
+              <h3 className="font-display text-2xl sm:text-[1.75rem] font-bold tracking-tight text-white">
+                Showroom Reels &amp; Short Videos
+              </h3>
+            </div>
+            <p className="text-sm text-slate-400">
+              Tap play to watch showroom clips right here or open directly in the app.
+            </p>
           </div>
 
           <div
             role="tablist"
             aria-label="Filter reels by social platform"
-            className="inline-flex items-center gap-1 p-1 bg-slate-100 rounded-lg border border-slate-200 max-w-full overflow-x-auto self-start md:self-auto"
+            className="inline-flex items-center gap-1 p-1 bg-navy-900 rounded-xl border border-white/10 max-w-full overflow-x-auto self-start md:self-auto"
           >
             {REEL_FILTER_TABS.map((tab) => {
               const isSelected = activeFilter === tab.id;
@@ -1086,16 +1113,16 @@ export function SocialMediaReelsSection() {
                     setActiveFilter(tab.id);
                     setPlayingReelId(null);
                   }}
-                  className={`px-3 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
+                  className={`px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-colors whitespace-nowrap shrink-0 ${
                     isSelected
-                      ? 'bg-navy-900 text-white shadow-sm'
-                      : 'text-slate-700 hover:text-navy-900 hover:bg-white/70'
+                      ? 'bg-amber-400 text-navy-950 shadow-sm'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   {tab.label}{' '}
                   <span
-                    className={`font-mono text-xs ${
-                      isSelected ? 'text-amber-300' : 'text-slate-500'
+                    className={`font-mono text-xs tabular-nums ${
+                      isSelected ? 'text-navy-900' : 'text-slate-400'
                     }`}
                   >
                     ({countsByFilter[tab.id]})
@@ -1108,11 +1135,11 @@ export function SocialMediaReelsSection() {
 
         {/* Vertical 9:16 Reels Showcase Grid */}
         {filteredReels.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center">
-            <p className="font-display text-lg font-bold text-navy-900 mb-2">
+          <div className="rounded-2xl border border-dashed border-white/15 bg-navy-900/60 p-12 text-center">
+            <p className="font-display text-lg font-bold text-white mb-2">
               No reels added for this platform yet
             </p>
-            <p className="text-sm text-slate-600 mb-5">
+            <p className="text-sm text-slate-300 mb-5">
               {isOwnerMode
                 ? 'Paste an Instagram Reel, YouTube Short, Facebook Reel, or Google Business post link to showcase it right here.'
                 : 'New short reels for this channel will appear here soon.'}
@@ -1125,7 +1152,7 @@ export function SocialMediaReelsSection() {
                     activeFilter === 'all' ? 'instagram' : activeFilter,
                   )
                 }
-                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-navy-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-navy-950 bg-amber-400 hover:bg-amber-300 rounded-xl transition-colors"
               >
                 <Plus className="w-4 h-4" aria-hidden="true" />
                 <span>Add First Reel</span>
@@ -1135,7 +1162,7 @@ export function SocialMediaReelsSection() {
         ) : (
           <div
             data-testid="reels-grid"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           >
             {filteredReels.map((reel) => {
               const embedInfo = parseReelEmbedUrl(reel.reelUrl, reel.platform);
@@ -1153,7 +1180,7 @@ export function SocialMediaReelsSection() {
                 <article
                   key={reel.id}
                   data-testid={`reel-card-${reel.id}`}
-                  className="flex flex-col rounded-xl bg-slate-50 border border-slate-200 overflow-hidden"
+                  className="group flex flex-col rounded-2xl bg-navy-900 border border-white/10 overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-amber-400/45 shadow-lg shadow-black/25"
                 >
                   {/* 9:16 Vertical Reel Viewport */}
                   <div className="relative aspect-[9/16] w-full bg-navy-950 overflow-hidden">
@@ -1171,7 +1198,7 @@ export function SocialMediaReelsSection() {
                           type="button"
                           onClick={() => setPlayingReelId(null)}
                           aria-label={`Close ${reel.title} player`}
-                          className="absolute top-3 right-3 inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold bg-navy-950/90 text-white hover:bg-navy-900 rounded-md border border-white/20"
+                          className="absolute top-3 right-3 inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold bg-navy-950/90 text-white hover:bg-navy-900 rounded-lg border border-white/20 backdrop-blur-sm"
                         >
                           <X className="w-3.5 h-3.5" aria-hidden="true" />
                           <span>Close</span>
@@ -1183,29 +1210,32 @@ export function SocialMediaReelsSection() {
                           src={reel.thumbnail}
                           alt={reel.title}
                           fallbackLabel={reel.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
                         />
 
-                        {/* Dark gradient for crisp legibility */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-navy-950/95 via-navy-950/35 to-navy-950/50" />
+                        {/* Measured top + bottom scrims for crisp WCAG AA legibility */}
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/75 via-transparent to-navy-950/95" />
+                        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-navy-950 via-navy-950/75 to-transparent" />
 
-                        {/* Top platform indicator + duration */}
-                        <div className="absolute top-3 inset-x-3 flex items-center justify-between gap-2">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-navy-950/85 text-white text-xs font-semibold border border-white/15">
+                        {/* Clean unboxed top metadata strip (zero pills) */}
+                        <div className="absolute top-0 inset-x-0 p-4 flex items-center justify-between gap-2 text-xs font-medium text-white">
+                          <span className="inline-flex items-center gap-2 min-w-0 truncate">
                             <SocialPlatformIcon
                               platform={reel.platform}
-                              className="w-3.5 h-3.5 text-amber-400"
+                              className="w-4 h-4 text-amber-400 shrink-0"
                             />
-                            <span>{REEL_PLATFORM_BADGE_LABELS[reel.platform]}</span>
+                            <span className="truncate tracking-wide">
+                              {REEL_PLATFORM_BADGE_LABELS[reel.platform]}
+                            </span>
                           </span>
                           {reel.duration && (
-                            <span className="px-2 py-0.5 rounded bg-navy-950/85 text-slate-200 text-[11px] font-mono tabular-nums border border-white/15">
+                            <span className="font-mono text-[11px] tabular-nums text-slate-200 shrink-0">
                               {reel.duration}
                             </span>
                           )}
                         </div>
 
-                        {/* Center Play / Link Trigger */}
+                        {/* Center Frosted-Glass Play Trigger */}
                         {(embedInfo.canEmbed ||
                           destinationUrl ||
                           isOwnerMode) && (
@@ -1215,7 +1245,7 @@ export function SocialMediaReelsSection() {
                                 type="button"
                                 onClick={() => setPlayingReelId(reel.id)}
                                 aria-label={`Play ${reel.title}`}
-                                className="w-14 h-14 rounded-full bg-amber-400 hover:bg-amber-300 text-navy-950 inline-flex items-center justify-center shadow-lg transition-transform hover:scale-105"
+                                className="w-15 h-15 rounded-full bg-white/15 backdrop-blur-md border border-white/35 text-white inline-flex items-center justify-center shadow-xl transition-all duration-200 group-hover:bg-amber-400 group-hover:border-amber-300 group-hover:text-navy-950 group-hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
                               >
                                 <Play
                                   className="w-6 h-6 fill-current ml-0.5"
@@ -1228,7 +1258,7 @@ export function SocialMediaReelsSection() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label={`Watch ${reel.title} on ${SOCIAL_PLATFORM_LABELS[reel.platform]}`}
-                                className="w-14 h-14 rounded-full bg-amber-400 hover:bg-amber-300 text-navy-950 inline-flex items-center justify-center shadow-lg transition-transform hover:scale-105"
+                                className="w-15 h-15 rounded-full bg-white/15 backdrop-blur-md border border-white/35 text-white inline-flex items-center justify-center shadow-xl transition-all duration-200 group-hover:bg-amber-400 group-hover:border-amber-300 group-hover:text-navy-950 group-hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
                               >
                                 <Play
                                   className="w-6 h-6 fill-current ml-0.5"
@@ -1239,7 +1269,7 @@ export function SocialMediaReelsSection() {
                               <button
                                 type="button"
                                 onClick={() => openEditReelManager(reel)}
-                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-navy-950 text-xs font-semibold shadow-lg transition-colors"
+                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-navy-950 text-xs font-semibold shadow-lg transition-colors"
                               >
                                 <Link2 className="w-4 h-4" aria-hidden="true" />
                                 <span>Paste Reel Link</span>
@@ -1248,12 +1278,12 @@ export function SocialMediaReelsSection() {
                           </div>
                         )}
 
-                        {/* Bottom reel title overlay */}
-                        <div className="absolute bottom-0 inset-x-0 p-4">
-                          <h4 className="font-display text-base font-bold text-white leading-snug mb-1">
+                        {/* Bottom editorial caption overlay */}
+                        <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5">
+                          <h4 className="font-display text-base font-bold text-white leading-snug tracking-tight mb-1.5">
                             {reel.title}
                           </h4>
-                          <p className="text-xs text-slate-200 leading-relaxed line-clamp-2">
+                          <p className="text-xs text-slate-300 leading-relaxed line-clamp-2">
                             {reel.caption}
                           </p>
                         </div>
@@ -1261,16 +1291,16 @@ export function SocialMediaReelsSection() {
                     )}
                   </div>
 
-                  {/* Clean footer bar under each reel */}
-                  <div className="p-3 bg-white border-t border-slate-200 flex items-center justify-between gap-2">
+                  {/* Sleek integrated dark footer bar under each reel */}
+                  <div className="px-4 py-3 bg-navy-950/75 border-t border-white/10 flex items-center justify-between gap-2">
                     {destinationUrl ? (
                       <a
                         href={destinationUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-navy-900 hover:text-amber-700 transition-colors truncate"
+                        className="inline-flex items-center justify-between w-full gap-1.5 text-xs font-semibold text-amber-300 hover:text-amber-200 transition-colors truncate"
                       >
-                        <span>
+                        <span className="truncate">
                           {embedInfo.externalUrl
                             ? `Open on ${SOCIAL_PLATFORM_LABELS[reel.platform]}`
                             : reel.platform === 'google-business'
@@ -1278,12 +1308,12 @@ export function SocialMediaReelsSection() {
                               : `Watch on ${SOCIAL_PLATFORM_LABELS[reel.platform]}`}
                         </span>
                         <ArrowUpRight
-                          className="w-3.5 h-3.5 shrink-0"
+                          className="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                           aria-hidden="true"
                         />
                       </a>
                     ) : (
-                      <span className="text-xs font-medium text-slate-500 truncate">
+                      <span className="text-xs font-medium text-slate-400 truncate">
                         {isOwnerMode
                           ? 'Ready for your reel URL'
                           : SOCIAL_PLATFORM_LABELS[reel.platform]}
@@ -1296,7 +1326,7 @@ export function SocialMediaReelsSection() {
                           type="button"
                           onClick={() => openEditReelManager(reel)}
                           aria-label={`Edit ${reel.title}`}
-                          className="p-1.5 text-slate-600 hover:text-navy-900 hover:bg-slate-100 rounded-md transition-colors"
+                          className="p-1.5 text-slate-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
                         >
                           <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
                         </button>
@@ -1308,7 +1338,7 @@ export function SocialMediaReelsSection() {
                             )
                           }
                           aria-label={`Remove ${reel.title}`}
-                          className="p-1.5 text-slate-500 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
+                          className="p-1.5 text-slate-300 hover:text-red-300 hover:bg-red-500/20 rounded-md transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
                         </button>
@@ -1317,20 +1347,20 @@ export function SocialMediaReelsSection() {
                   </div>
 
                   {isOwnerMode && isConfirmingDelete && (
-                    <div className="px-3 py-2 bg-red-50 border-t border-red-200 flex items-center justify-between gap-2 text-xs text-red-900">
+                    <div className="px-4 py-2.5 bg-red-950/90 border-t border-red-500/40 flex items-center justify-between gap-2 text-xs text-red-100">
                       <span className="font-medium">Remove reel?</span>
                       <div className="flex items-center gap-1.5">
                         <button
                           type="button"
                           onClick={() => handleDeleteReel(reel.id, reel.title)}
-                          className="px-2 py-1 rounded bg-red-700 text-white font-semibold hover:bg-red-800"
+                          className="px-2.5 py-1 rounded-md bg-red-600 text-white font-semibold hover:bg-red-500"
                         >
                           Confirm
                         </button>
                         <button
                           type="button"
                           onClick={() => setConfirmDeleteReelId(null)}
-                          className="px-2 py-1 rounded bg-white border border-red-200 text-red-800"
+                          className="px-2.5 py-1 rounded-md bg-navy-900 border border-white/15 text-slate-200 hover:text-white"
                         >
                           Cancel
                         </button>
