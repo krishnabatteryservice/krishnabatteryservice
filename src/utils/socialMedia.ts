@@ -189,6 +189,7 @@ export function parseReelEmbedUrl(
 
   // Google Business Profile / Google Maps share links
   if (
+    host === 'share.google' ||
     host === 'g.page' ||
     host === 'maps.app.goo.gl' ||
     host === 'business.google.com' ||

@@ -1139,6 +1139,13 @@ export function SocialMediaReelsSection() {
           >
             {filteredReels.map((reel) => {
               const embedInfo = parseReelEmbedUrl(reel.reelUrl, reel.platform);
+              const matchingProfile = socialData.profiles.find(
+                (p) => p.platform === reel.platform,
+              );
+              const channelUrl = matchingProfile
+                ? normalizeSocialUrl(matchingProfile.url)
+                : '';
+              const destinationUrl = embedInfo.externalUrl || channelUrl || null;
               const isPlaying = playingReelId === reel.id && embedInfo.canEmbed;
               const isConfirmingDelete = confirmDeleteReelId === reel.id;
 
@@ -1200,7 +1207,7 @@ export function SocialMediaReelsSection() {
 
                         {/* Center Play / Link Trigger */}
                         {(embedInfo.canEmbed ||
-                          embedInfo.externalUrl ||
+                          destinationUrl ||
                           isOwnerMode) && (
                           <div className="absolute inset-0 flex items-center justify-center">
                             {embedInfo.canEmbed ? (
@@ -1215,9 +1222,9 @@ export function SocialMediaReelsSection() {
                                   aria-hidden="true"
                                 />
                               </button>
-                            ) : embedInfo.externalUrl ? (
+                            ) : destinationUrl ? (
                               <a
-                                href={embedInfo.externalUrl}
+                                href={destinationUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label={`Watch ${reel.title} on ${SOCIAL_PLATFORM_LABELS[reel.platform]}`}
@@ -1256,15 +1263,19 @@ export function SocialMediaReelsSection() {
 
                   {/* Clean footer bar under each reel */}
                   <div className="p-3 bg-white border-t border-slate-200 flex items-center justify-between gap-2">
-                    {embedInfo.externalUrl ? (
+                    {destinationUrl ? (
                       <a
-                        href={embedInfo.externalUrl}
+                        href={destinationUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-xs font-semibold text-navy-900 hover:text-amber-700 transition-colors truncate"
                       >
                         <span>
-                          Open on {SOCIAL_PLATFORM_LABELS[reel.platform]}
+                          {embedInfo.externalUrl
+                            ? `Open on ${SOCIAL_PLATFORM_LABELS[reel.platform]}`
+                            : reel.platform === 'google-business'
+                              ? 'View on Google Business'
+                              : `Watch on ${SOCIAL_PLATFORM_LABELS[reel.platform]}`}
                         </span>
                         <ArrowUpRight
                           className="w-3.5 h-3.5 shrink-0"
