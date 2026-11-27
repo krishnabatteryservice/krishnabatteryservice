@@ -526,7 +526,9 @@ export function ProductsServicesSection({
                     </h3>
                     <p
                       className={`text-sm text-slate-600 leading-relaxed mb-4${
-                        index === 0 ? ' font-bold' : ''
+                        index === 0 || index === 3 || index === 4 || index === 5
+                          ? ' font-bold'
+                          : ''
                       }`}
                     >
                       {item.summary}
