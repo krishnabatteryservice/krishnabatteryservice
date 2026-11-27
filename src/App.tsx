@@ -1,21 +1,15 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Header} from './components/Header';
 import {HeroSection} from './components/HeroSection';
 import {AboutSection} from './components/AboutSection';
-import {BatteryCategoriesSection} from './components/BatteryCategoriesSection';
 import {WhyChooseUsSection} from './components/WhyChooseUsSection';
-import {FaqSection} from './components/FaqSection';
+import {SocialMediaReelsSection} from './components/SocialMediaReelsSection';
 import {ContactSection} from './components/ContactSection';
 import {Footer} from './components/Footer';
 import {MobileStickyBar} from './components/MobileStickyBar';
-import type {EnquiryCategory} from './utils/enquiry';
 
 export default function App() {
   const [mapsQuotaExceeded, setMapsQuotaExceeded] = useState(false);
-  const [selectedEnquiryCategory, setSelectedEnquiryCategory] = useState<
-    EnquiryCategory | ''
-  >('');
-  const [selectedEnquiryNote, setSelectedEnquiryNote] = useState('');
 
   useEffect(() => {
     const handleQuotaExceeded = () => {
@@ -26,18 +20,6 @@ export default function App() {
       window.removeEventListener('gmp-quota-exceeded', handleQuotaExceeded);
     };
   }, []);
-
-  const handleSelectEnquiryCategory = useCallback(
-    (category: EnquiryCategory, modelNote?: string) => {
-      setSelectedEnquiryCategory(category);
-      setSelectedEnquiryNote(modelNote || '');
-      const el = document.getElementById('enquiry-form');
-      if (el) {
-        el.scrollIntoView({behavior: 'smooth', block: 'start'});
-      }
-    },
-    [],
-  );
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 pb-14 md:pb-0">
@@ -63,15 +45,9 @@ export default function App() {
       <main className="flex-1">
         <HeroSection />
         <AboutSection />
-        <BatteryCategoriesSection
-          onSelectEnquiryCategory={handleSelectEnquiryCategory}
-        />
         <WhyChooseUsSection />
-        <FaqSection />
-        <ContactSection
-          preselectedCategory={selectedEnquiryCategory}
-          preselectedNote={selectedEnquiryNote}
-        />
+        <SocialMediaReelsSection />
+        <ContactSection />
       </main>
 
       <Footer />

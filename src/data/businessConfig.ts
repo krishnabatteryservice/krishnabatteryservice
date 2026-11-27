@@ -158,12 +158,6 @@ export const FAQ_ITEMS: FaqItem[] = [
       'We focus on automobile batteries for cars and two-wheelers (scooters and motorcycles), home inverter batteries, and complete home inverter and battery backup solutions.',
   },
   {
-    id: 'faq-pricing-brands',
-    question: 'How do I check available brands, warranty terms, and current prices?',
-    answer:
-      'Battery pricing and brand availability depend on the exact vehicle model or inverter capacity required. Call us directly at 7904055290 or tap the WhatsApp button to receive current stock details, manufacturer warranty information, and pricing.',
-  },
-  {
     id: 'faq-choosing-battery',
     question: 'What information should I share to get the right battery recommendation?',
     answer:

@@ -1,5 +1,5 @@
 import {motion} from 'motion/react';
-import {ArrowRight, MapPin, MessageCircle, Phone} from 'lucide-react';
+import {MapPin, MessageCircle, Phone} from 'lucide-react';
 import {BUSINESS_INFO} from '../data/businessConfig';
 import {buildWhatsAppUrl} from '../utils/enquiry';
 import {ResilientImage} from './ResilientImage';
@@ -59,16 +59,6 @@ export function HeroSection() {
             </div>
 
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-300">
-              <a
-                href="#batteries"
-                className="inline-flex items-center gap-1.5 text-slate-200 hover:text-amber-400 transition-colors font-medium"
-              >
-                <span>Browse Battery Categories</span>
-                <ArrowRight className="w-4 h-4" aria-hidden="true" />
-              </a>
-              <span aria-hidden="true" className="hidden sm:inline text-slate-600">
-                ·
-              </span>
               <a
                 href="#contact"
                 className="inline-flex items-center gap-1.5 text-slate-200 hover:text-amber-400 transition-colors font-medium"

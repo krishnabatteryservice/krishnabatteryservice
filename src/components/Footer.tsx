@@ -58,32 +58,13 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a
-                  href="#car-two-wheeler"
-                  className="hover:text-amber-400 transition-colors"
-                >
-                  Car &amp; Two-Wheeler Batteries
+                <a href="#social" className="hover:text-amber-400 transition-colors">
+                  Social Media &amp; Reels
                 </a>
               </li>
               <li>
-                <a
-                  href="#home-inverter"
-                  className="hover:text-amber-400 transition-colors"
-                >
-                  Home Inverter Batteries
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#inverter-solutions"
-                  className="hover:text-amber-400 transition-colors"
-                >
-                  Inverter &amp; Battery Solutions
-                </a>
-              </li>
-              <li>
-                <a href="#faq" className="hover:text-amber-400 transition-colors">
-                  Frequently Asked Questions
+                <a href="#contact" className="hover:text-amber-400 transition-colors">
+                  Contact &amp; Location
                 </a>
               </li>
             </ul>

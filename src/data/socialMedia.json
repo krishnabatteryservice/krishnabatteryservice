@@ -1,0 +1,70 @@
+{
+  "profiles": [
+    {
+      "platform": "instagram",
+      "name": "Instagram",
+      "handle": "@krishnabatteryservice",
+      "url": "",
+      "description": "Battery replacement reels, Amaron showroom highlights, and quick vehicle fitment clips."
+    },
+    {
+      "platform": "facebook",
+      "name": "Facebook",
+      "handle": "Krishna Battery Service",
+      "url": "",
+      "description": "Mugalivakkam store updates, customer tips, and home inverter battery announcements."
+    },
+    {
+      "platform": "youtube",
+      "name": "YouTube",
+      "handle": "@krishnabatteryservice",
+      "url": "",
+      "description": "YouTube Shorts covering car battery testing, inverter load guidance, and battery care."
+    },
+    {
+      "platform": "x",
+      "name": "X",
+      "handle": "@krishnabattery",
+      "url": "",
+      "description": "Quick store updates, power-cut readiness tips, and battery availability notices."
+    }
+  ],
+  "reels": [
+    {
+      "id": "reel-amaron-showroom-tour",
+      "platform": "instagram",
+      "title": "Inside Our Mugalivakkam Battery Showroom",
+      "caption": "Quick walkthrough of our automotive and home inverter battery wall on Madha Nagar Main Road, Madhananthapuram.",
+      "reelUrl": "",
+      "thumbnail": "/assets/aistudio/WhatsApp_Image_2026-11-25_at_4.30.02_PM_cfa250ca.jpeg",
+      "duration": "0:30"
+    },
+    {
+      "id": "reel-experience-counter",
+      "platform": "youtube",
+      "title": "Car & Two-Wheeler Battery Counter Showcase",
+      "caption": "See how we match car, scooter, and motorcycle batteries by vehicle model and terminal layout before fitment.",
+      "reelUrl": "",
+      "thumbnail": "/assets/aistudio/WhatsApp_Image_2026-11-25_at_4.30.03_PM_545247eb.jpeg",
+      "duration": "0:45"
+    },
+    {
+      "id": "reel-home-inverter-backup",
+      "platform": "facebook",
+      "title": "Home Inverter & Tall Tubular Battery Setup",
+      "caption": "Compact hallway trolley installation ideas for steady home backup of lights, ceiling fans, and Wi-Fi in Chennai.",
+      "reelUrl": "",
+      "thumbnail": "/src/assets/images/home_inverter_battery_1795588432641.jpg",
+      "duration": "0:40"
+    },
+    {
+      "id": "reel-battery-testing-check",
+      "platform": "x",
+      "title": "How to Spot a Weak Car Starter Battery Early",
+      "caption": "Quick voltage check signs to watch for before a slow morning crank turns into a stranded vehicle.",
+      "reelUrl": "",
+      "thumbnail": "/src/assets/images/battery_testing_service_1795588434084.jpg",
+      "duration": "0:25"
+    }
+  ]
+}
